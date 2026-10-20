@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="أطلس التنزيل: خريطة تفاعلية لمواضع نزول سور القرآن، وخط زمني، وقصص مصوّرة، وأبراج من الآيات للتأمل، بحسب الطبري وابن كثير والطبرسي.">
+<meta property="og:title" content="أطلس التنزيل">
+<meta property="og:description" content="أين نزلت كل سورة؟ ومتى؟ وما قصتها؟">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>أطلس التنزيل</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Layout: night-over-the-desert atlas — top menu; map first; focus card slides in. Single deliberate dark look. */
+:root{
+  --ink:#0e1322; --ink2:#141b2f; --line:#26304a;
+  --sand:#efe3c6; --muted:#a3abc0;
+  --makki:#e7a65a; --madani:#4cc79f; --story:#f3cf6e; --storyfill:#7b5cc4; --disp:#b996f5; --event:#e9eef8;
+  --sea:#0d1a31; --land:#222a40; --land2:#1b2134; --coast:#55618a;
+  --display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --quran:"Amiri","Traditional Arabic","Times New Roman",serif;
+  color-scheme:dark;
+}
+body{background:var(--ink);color:var(--sand);font-family:var(--body);font-size:15px;line-height:1.75;direction:rtl}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0}
+h2{font-size:clamp(22px,4vw,30px);margin:6px 0}
+.sub{color:var(--muted);margin:0 0 16px;max-width:72ch}
+
+/* top menu */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink2)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--ink2) 96%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.row1 .in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:8px}
+.row2{border-top:1px solid var(--line);background:color-mix(in srgb,var(--ink) 70%,transparent)}
+.brand{font-family:var(--display);font-weight:700;font-size:21px;color:var(--story);white-space:nowrap;flex:1;text-align:center}
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding-block:6px}
+.tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:0;color:var(--muted);font:inherit;font-size:14px;line-height:1.25;padding:6px 4px;border-radius:9px;cursor:pointer;text-align:center;min-width:0}
+.tabs button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-selected="true"]{color:var(--ink);background:var(--sand);font-weight:600}
+.tabs button:focus-visible{outline:2px solid var(--story)}
+@media (min-width:700px){.tabs button{flex-direction:row;gap:8px;font-size:15px;padding:8px 10px}}
+@media (max-width:420px){.tabs button{font-size:12px}.brand{font-size:18px}}
+.home{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--story);color:var(--ink);border:0;border-radius:10px;padding:7px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.home:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.tfsel{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.tfsel select{background:var(--ink);color:var(--sand);border:1px solid var(--story);border-radius:8px;padding:6px 8px;font:inherit;font-size:13.5px}
+.tfsel select:focus-visible{outline:2px solid var(--story)}
+@media (max-width:420px){.tfsel span{display:none}}
+.tfbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.tfbar button{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:2px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.tfbar button[aria-pressed="true"]{background:var(--sand);color:var(--ink);border-color:var(--sand)}
+.src.ik{background:#1c2a44;color:#8fbaf5}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--sand);color:var(--ink);padding:8px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:20;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+.cstats{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.cstats .ctrl button{font-size:13px;padding:5px 12px}
+.cprog{font-size:13px;color:var(--muted)}
+.cverse{border-right:3px solid var(--c);padding:4px 12px 4px 0;margin-top:10px}
+.cverse .ayah{font-size:20px;margin:0;color:var(--c)}
+.cthread{margin-top:14px;padding:12px;border-radius:10px;background:var(--ink);font-size:14.5px}
+.cq{margin-top:12px;padding:14px;border-radius:12px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);font-size:16.5px;line-height:1.8}
+.cq b{display:block;font-family:var(--display);color:var(--c);font-size:15px;margin-bottom:2px}
+.hint{font-size:13.5px;color:var(--story);margin-top:12px}
+#net .star{cursor:pointer}
+#net .star:focus-visible{outline:none}
+#net .star:focus-visible .sd{stroke:#fff;stroke-width:3}
+.beckon{animation:beckon 1.3s ease-in-out infinite}
+@keyframes beckon{0%,100%{opacity:.25}50%{opacity:.95}}
+.draw{stroke-dasharray:400;stroke-dashoffset:400;animation:draw .7s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.beckon,.draw{animation:none;stroke-dashoffset:0}}
+.tab{margin-top:16px}
+
+/* atlas */
+.atlas{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.atlas.focus{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+@media (max-width:860px){.atlas.focus{grid-template-columns:1fr}}
+.mapbox{background:var(--sea);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;min-width:0}
+.mapbar{display:flex;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line);background:var(--ink2);overflow-x:auto;scrollbar-width:thin;align-items:center}
+.seg{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.seg i{width:8px;height:8px;border-radius:50%;background:var(--c,var(--muted))}
+.seg[aria-pressed="true"]{color:var(--ink);background:var(--sand);border-color:var(--sand)}
+.seg:focus-visible{outline:2px solid var(--story);outline-offset:2px}
+#map{display:block;width:100%;height:clamp(360px,70vh,700px);touch-action:manipulation}
+.atlas.focus #map{height:clamp(320px,58vh,640px)}
+#map .pin{cursor:pointer}
+#map .pin:focus-visible{outline:none}
+#map .pin:focus-visible .core{stroke:#fff;stroke-width:3}
+#map text{font-family:var(--body);paint-order:stroke;stroke:#0b1426;stroke-width:6px;stroke-linejoin:round}
+#map .pin,#map .sc{transition:opacity .45s ease}
+.compass{position:absolute;left:12px;bottom:48px;width:34px;height:34px;pointer-events:none;opacity:.75}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:8px 12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:var(--ink2)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-left:5px;vertical-align:-1px}
+.pulse{animation:pulse 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(2.4)}}
+.backbtn{flex:0 0 auto;background:var(--story);color:var(--ink);border:0;border-radius:8px;padding:6px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.backbtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#mapBack{margin-inline-start:auto}
+
+.panel{background:var(--ink2);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.focuscard{max-height:calc(100vh - 150px);overflow:auto;position:sticky;top:calc(env(safe-area-inset-top,0px) + 130px)}
+@media (max-width:860px){.focuscard{max-height:none;position:static}}
+.focuscard.in{animation:cardIn .55s cubic-bezier(.2,.7,.2,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.cardtop{display:flex;margin-bottom:10px}
+.hero{display:flex;gap:14px;align-items:center}
+.bigord{font-family:var(--display);font-size:52px;line-height:1;color:var(--story);font-variant-numeric:tabular-nums}
+.hero h3{font-size:34px;margin:0}
+.num{font-size:13px;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.tag{font-size:12.5px;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:none;font-family:var(--body)}
+.tag.k{color:var(--makki);border-color:color-mix(in srgb,var(--makki) 50%,transparent)}
+.tag.m{color:var(--madani);border-color:color-mix(in srgb,var(--madani) 50%,transparent)}
+.tag.d{color:var(--disp);border-color:color-mix(in srgb,var(--disp) 50%,transparent)}
+.tagbtn{cursor:pointer;color:var(--story);border-color:color-mix(in srgb,var(--story) 50%,transparent)}
+.lbl{font-size:12.5px;font-weight:600;color:var(--muted);margin-top:14px}
+.theme{font-size:17px;margin:2px 0 0}
+.note{margin:8px 0 0;padding:10px 12px;border-radius:10px;background:var(--ink);font-size:14px}
+.src{display:inline-block;font-size:11.5px;font-weight:600;padding:0 8px;border-radius:6px;margin-left:6px;background:var(--line);color:var(--sand)}
+.src.t{background:#3a2c1a;color:var(--makki)} .src.mb{background:#14332b;color:var(--madani)}
+.ev{display:flex;gap:8px;align-items:baseline;margin-top:6px;font-size:14px}
+.ev b{color:var(--story);font-weight:600;white-space:nowrap}
+.evbox{margin-top:8px;padding:10px 12px;border-radius:10px;border:1px dashed var(--story);font-size:14px}
+.evbox b{color:var(--story)}
+.linkbtn{background:none;border:0;color:var(--story);font:inherit;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:focus-visible{outline:2px solid var(--story)}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap}
+.ctrl button{background:var(--ink);border:1px solid var(--line);color:var(--sand);font:inherit;font-size:14px;border-radius:8px;padding:6px 14px;cursor:pointer}
+.ctrl button:focus-visible{outline:2px solid var(--story)}
+.mini{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:12px;align-items:start;margin-top:8px;font-size:14px}
+.mini svg{width:100%;height:auto;border-radius:8px;display:block}
+@media (max-width:420px){.mini{grid-template-columns:1fr}}
+.refl{border-right:3px solid var(--c);padding:6px 12px 6px 0;margin-top:8px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}
+.filters input{flex:1 1 180px;min-width:0;background:var(--ink2);border:1px solid var(--line);color:var(--sand);border-radius:8px;padding:7px 12px;font:inherit}
+.filters input:focus-visible{outline:2px solid var(--story)}
+.pf{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(114px,1fr));gap:6px}
+.sbtn{display:flex;gap:6px;align-items:center;background:var(--ink2);border:1px solid var(--line);border-radius:8px;color:var(--sand);font:inherit;font-size:14px;padding:6px 8px;cursor:pointer;text-align:right;position:relative;min-width:0}
+.sbtn span.n{font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted);min-width:22px}
+.sbtn::before{content:"";width:4px;align-self:stretch;border-radius:2px;background:var(--c)}
+.sbtn.dd::after{content:"";position:absolute;top:5px;left:6px;width:6px;height:6px;border-radius:50%;background:var(--disp)}
+.sbtn[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset}
+.sbtn:focus-visible{outline:2px solid var(--story)}
+
+/* timeline */
+.era{font-family:var(--display);font-size:24px;margin:26px 0 4px;display:flex;align-items:center;gap:10px}
+.era::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c)}
+.era small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400}
+.tline{position:relative;padding-right:30px}
+.tline::before{content:"";position:absolute;right:9px;top:0;bottom:0;width:2px;background:linear-gradient(var(--c1),var(--c2))}
+.trow{position:relative;display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+@media (max-width:640px){.trow{grid-template-columns:1fr;gap:6px}}
+.trow::before{content:"";position:absolute;right:-27px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid var(--c)}
+.when{font-family:var(--display);font-size:19px;color:var(--c);line-height:1.3}
+.when small{display:block;font-family:var(--body);font-size:12.5px;color:var(--muted);margin-top:2px}
+.what{display:flex;flex-direction:column;gap:8px;min-width:0}
+.tev{background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px}
+.tev b{color:var(--story);font-family:var(--display);font-weight:500;font-size:16px;display:block}
+.tev .yr{font-size:12px;color:var(--muted)}
+.tsur{display:flex;flex-wrap:wrap;gap:6px}
+.tchip{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid color-mix(in srgb,var(--c) 45%,transparent);color:var(--sand);border-radius:999px;padding:2px 10px 2px 8px;font:inherit;font-size:13.5px;cursor:pointer}
+.tchip span{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tchip:hover{background:color-mix(in srgb,var(--c) 18%,transparent)}
+.tchip:focus-visible{outline:2px solid var(--story)}
+.tchip.anc{border-color:var(--story)}
+.tnote{font-size:12.5px;color:var(--muted)}
+
+/* stories */
+.stories{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.story{background:var(--ink2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.story svg{display:block;width:100%;height:auto;max-width:100%}
+.story .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px}
+.story h3{font-size:21px}
+.ayah{font-family:var(--quran);font-size:21px;line-height:1.9;color:var(--story);margin:2px 0}
+.ref{font-size:12.5px;color:var(--muted)}
+.expl{font-size:14px;color:var(--muted);border-right:2px solid var(--line);padding-right:10px}
+.expl b{color:var(--sand);font-weight:600}
+.reflect{font-size:14px;margin-top:4px}
+.reflect b{color:var(--disp)}
+
+/* reflection network */
+.netwrap{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.netwrap{grid-template-columns:1fr}}
+.netbox{background:radial-gradient(ellipse at center,#18203a 0%,var(--ink) 72%);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#net{display:block;width:100%;height:auto}
+#net .vn{cursor:pointer}
+#net .vn:focus-visible{outline:none}
+#net .vn:focus-visible .dot{stroke:#fff;stroke-width:3}
+#net text{font-family:var(--body)}
+.glow{animation:glow 3.2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.45}50%{opacity:.95}}
+.ai-note{font-size:12.5px;color:var(--muted);margin-top:10px}
+footer{margin-top:16px;color:var(--muted);font-size:14px;max-width:80ch}
+@media (prefers-reduced-motion:reduce){.pulse,.glow,.focuscard.in{animation:none}#map .pin,#map .sc{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="topbar">
+  <div class="row1"><div class="in">
+    <button class="home" id="home" aria-label="الرئيسية: إعادة الأطلس إلى البداية"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 11L12 3l9 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9.5V20h5v-6h3v6h5V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>الرئيسية</span></button>
+    <span class="brand">أطلس التنزيل</span>
+    <label class="tfsel"><span>التفسير</span>
+      <select id="tafsir" aria-label="اختر التفسير">
+        <option value="all">الثلاثة معاً</option>
+        <option value="t">الطبري</option>
+        <option value="ik">ابن كثير</option>
+        <option value="mb">الطبرسي</option>
+      </select>
+    </label>
+  </div></div>
+  <div class="row2"><div class="in">
+    <nav class="tabs" role="tablist" aria-label="أقسام الأطلس">
+      <button role="tab" data-tab="map" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z M9 4v14 M15 6v14"/></svg>الخريطة</button>
+      <button role="tab" data-tab="order" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>الزمن والتنزيل</button>
+      <button role="tab" data-tab="stories" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z M20 5h-5a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h5z"/></svg>القصص المصوّرة</button>
+      <button role="tab" data-tab="reflect" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17L10 7l5 6 4-4"/><circle cx="5" cy="17" r="1.6"/><circle cx="10" cy="7" r="1.6"/><circle cx="15" cy="13" r="1.6"/><circle cx="19" cy="9" r="1.6"/></svg>شبكة التأمل</button>
+      <button role="tab" data-tab="about" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6 M12 7.5v.5"/></svg>عن المصادر</button>
+    </nav>
+  </div></div>
+</div>
+
+<div class="wrap">
+  <section id="atlas" class="tab" data-pane="map">
+    <div class="atlas" id="atlasBox">
+      <div class="mapbox">
+        <div class="mapbar" id="regions" role="group" aria-label="المناطق"></div>
+        <svg id="map" role="img" aria-label="خريطة شبه الجزيرة العربية والمناطق المذكورة في القرآن"></svg>
+        <svg class="compass" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#a3abc0" stroke-opacity=".4"/><path d="M20 4L25 20H15Z" fill="#f3cf6e"/><path d="M20 36L25 20H15Z" fill="#55618a"/><text x="20" y="13" text-anchor="middle" font-size="7" fill="#0e1322" font-family="sans-serif" font-weight="700">ش</text></svg>
+        <div class="legend">
+          <span><i style="background:var(--makki)"></i>مكة وما نزل فيها</span>
+          <span><i style="background:var(--madani)"></i>المدينة وما نزل فيها</span>
+          <span><i style="background:transparent;border:2px solid var(--event)"></i>حدث أو آيات مرتبطة</span>
+          <span><i style="background:var(--storyfill);border:1.5px solid var(--story);border-radius:2px;transform:rotate(45deg)"></i>موضع قصة قرآنية</span>
+        </div>
+      </div>
+      <aside class="panel focuscard" id="panel" aria-live="polite" hidden></aside>
+    </div>
+
+    <div id="overview">
+      <p class="sub" style="margin:14px 0 0">اضغط على سورة أو على أي موضع في الخريطة: تقترب الخريطة إليه وتظهر كل تفاصيله. وللرجوع اضغط «رجوع» أو مفتاح Esc.</p>
+      <div class="filters">
+        <div role="group" aria-label="تصفية" style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="seg" data-f="all" aria-pressed="true">الكل</button>
+          <button class="seg" data-f="k" aria-pressed="false">مكية</button>
+          <button class="seg" data-f="m" aria-pressed="false">مدنية</button>
+          <button class="seg" data-f="d" aria-pressed="false">مختلف فيها</button>
+          <button class="seg" data-f="x" aria-pressed="false">لها مواضع أخرى</button>
+        </div>
+        <div role="group" aria-label="الترتيب" style="display:flex;gap:6px">
+          <button class="seg" data-sort="mushaf" aria-pressed="true">ترتيب المصحف</button>
+          <button class="seg" data-sort="nuzul" aria-pressed="false">ترتيب النزول</button>
+        </div>
+        <input id="q" type="search" placeholder="ابحث باسم السورة أو رقمها" aria-label="بحث">
+        <span class="pf" id="pf"></span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section id="order" class="tab" data-pane="order" hidden>
+    <h2>الزمن والتنزيل</h2>
+    <p class="sub">خط زمني من البعثة إلى الوفاة: على اليمين الزمن، وتحته الأحداث مرتّبة، ثم السور التي نزلت في تلك المرحلة. السور ذات الإطار الذهبي مرتبطة بالحدث برواية، والرقم الصغير بجانب كل سورة هو ترتيب نزولها. اضغط أي سورة لتنتقل إليها على الخريطة.</p>
+    <div id="timeline"></div>
+    <p class="ai-note">الأحداث مؤرّخة بحسب كتب السيرة، وتواريخ بعضها تقريبية. أما توزيع السور المكية على المراحل فتقريبي، مأخوذ من ترتيب النزول المعتمد في المصحف المصري المتداول (المستند إلى روايات منسوبة لابن عباس). وقد لا يتطابق هذا الترتيب أحياناً مع تاريخ الحدث المرتبط بالسورة. والسورة توضع بحسب بدء نزولها، إذ نزل كثير منها على مراحل.</p>
+  </section>
+
+  <section id="stories" class="tab" data-pane="stories" hidden>
+    <h2>القصص المصوّرة</h2>
+    <p class="sub">رسوم رمزية لقصص القرآن، لا تصوّر الأنبياء ولا الأشخاص، وتعتمد على عناصر ذكرتها الآيات نفسها. تحت كل رسم «تفسير الصورة» يشرح رمز كل عنصر وما أورده المفسرون فيه، ثم سؤال للتأمل.</p>
+    <div class="stories" id="storyList"></div>
+  </section>
+
+  <section id="reflect" class="tab" data-pane="reflect" hidden>
+    <h2>شبكة التأمل</h2>
+    <p class="sub">كل نجمة آية، والنجوم المتقاربة بلون واحد برجٌ يجمع آيتين أو ثلاثاً أو أربعاً من سور مختلفة. اضغط نجمة، ثم صِلها بالنجوم التي تتوهّج بعدها واحدة واحدة. إذا اكتمل البرج ظهر اسمه، والخيط الذي يجمع آياته، وسؤال للتأمل.</p>
+    <div class="netwrap">
+      <div class="netbox"><svg id="net" viewBox="0 0 900 1190" role="img" aria-label="أبراج من الآيات يصلها المستخدم للتأمل"></svg></div>
+      <aside class="panel" id="npanel" aria-live="polite"></aside>
+    </div>
+    <p class="ai-note">هذه الروابط مقترحة آلياً لأغراض التأمل وجمع المتشابه في المعنى، وليست تفسيراً معتمداً ولا قولاً للمفسرين.</p>
+  </section>
+
+  <section id="about" class="tab" data-pane="about" hidden>
+    <h2>عن المصادر والمنهج</h2>
+    <p class="sub">يعرض الأطلس أين نزلت سور القرآن في شبه الجزيرة العربية بحسب الروايات المشهورة، ومواضع القصص القرآنية في الجزيرة والشام ومصر والعراق. ومعه خلاصة موضوع كل سورة، وما أورده ثلاثة من كبار المفسرين من أسباب النزول ومواضعه:</p>
+    <ul class="sub" style="padding-right:20px">
+      <li><b>الطبري</b> (ت 310هـ): «جامع البيان عن تأويل آي القرآن»، أقدم التفاسير الجامعة للروايات بالأسانيد.</li>
+      <li><b>ابن كثير</b> (ت 774هـ): «تفسير القرآن العظيم»، يعتني بنقد الروايات بالحديث الصحيح ويحذّر من الإسرائيليات.</li>
+      <li><b>الطبرسي</b> (ت 548هـ): «مجمع البيان في تفسير القرآن»، من أبرز التفاسير الإمامية، ويعرض أقوال الفريقين ويرجّح.</li>
+    </ul>
+    <p class="sub">اختر التفسير من القائمة في الأعلى، فتتغيّر الملاحظات وأسباب النزول والأحداث المرتبطة بحسبه، أو اختر «الثلاثة معاً» لترى مواضع الاتفاق والاختلاف. وزر «الرئيسية» يعيد الأطلس إلى بدايته من أي مكان.</p>
+    <footer>
+      <p>خلاصات المواضيع وأسباب النزول مكتوبة بإعادة صياغة مختصرة، وليست نقلاً حرفياً عن الكتب الثلاثة. ونسبة كل قول إلى مفسّر مبنية على المشهور من منهجه وما يذكره في موضعه، فارجع إلى الكتب للتثبّت قبل النقل أو الاستشهاد. نصوص الآيات مكتوبة بالرسم الإملائي بلا تشكيل، فراجعها على المصحف.</p>
+      <p>التصنيف المكي والمدني على ما في المصاحف المتداولة، ويُشار إلى الخلاف حيث وُجد. المواضع ذات الإطار المتقطع لا يُعرف مكانها بدقة اليوم، ومواضع القصص على أشهر أقوال المفسرين والمؤرخين.</p>
+      <p>الخريطة مبسّطة للتوضيح، وليست خريطة مساحية دقيقة. والرسوم رمزية لا تصوّر الأنبياء ولا الأشخاص.</p>
+    </footer>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   GEOGRAPHY (simplified, lon/lat)
+   ========================================================= */
+const W0={lon0:24.5,lon1:62,lat0:11,lat1:38.5};
+const C0=Math.cos(25*Math.PI/180), K0=800/((W0.lon1-W0.lon0)*C0), H0=(W0.lat1-W0.lat0)*K0;
+const proj=(lon,lat)=>[(lon-W0.lon0)*K0*C0,(W0.lat1-lat)*K0];
+
+const PEN=[[34.95,29.45],[34.85,28.6],[35.35,28.0],[35.69,27.35],[36.45,26.24],[37.27,25.05],[38.06,24.09],[38.6,23.5],[39.03,22.8],[39.1,22.2],[39.17,21.49],[39.6,20.8],[40.27,20.15],[41.08,19.13],[41.9,17.9],[42.55,16.89],[42.8,15.9],[42.95,14.8],[43.25,13.32],[43.45,12.65],[44.3,12.6],[45.03,12.8],[46.5,13.4],[48.0,13.95],[49.12,14.54],[50.5,15.1],[52.2,15.6],[53.3,16.6],[54.0,17.0],[55.3,17.4],[56.5,18.0],[57.8,19.0],[58.6,20.4],[59.4,21.5],[59.8,22.5],[59.0,23.0],[58.6,23.6],[57.6,23.8],[56.7,24.4],[56.4,25.3],[56.4,26.4],[56.0,26.0],[55.95,25.8],[55.27,25.2],[54.37,24.45],[53.5,24.1],[52.6,24.2],[51.6,24.3],[51.6,25.3],[51.55,25.9],[51.2,26.15],[50.85,25.6],[50.8,24.8],[50.4,25.3],[50.2,25.9],[50.1,26.43],[49.65,27.0],[48.8,27.6],[48.5,28.4],[48.3,28.8],[48.1,29.05],[47.95,29.35],[47.75,29.38],[48.1,29.55],[48.2,29.8],[48.5,29.98]];
+const IRAN=[[48.9,30.3],[49.6,30.0],[50.3,29.6],[50.83,28.97],[51.4,28.0],[52.6,27.4],[53.6,26.9],[54.9,26.55],[55.7,26.9],[56.27,27.18],[57.0,26.6],[57.77,25.64],[59.0,25.4],[60.6,25.3],[61.6,25.15],[64,25.0],[64,41],[28,41]];
+const LEVANT=[[28,36.75],[29.1,36.6],[30.6,36.85],[31.6,36.6],[32.6,36.1],[33.6,36.2],[34.6,36.8],[35.5,36.6],[36.15,36.7],[35.95,36.0],[35.78,35.55],[35.9,35.2],[35.85,34.5],[35.6,34.15],[35.48,33.9],[35.37,33.56],[35.2,33.27],[35.07,32.95],[34.95,32.8],[34.75,32.08],[34.5,31.6],[34.22,31.32],[33.8,31.15],[33.0,31.1],[32.3,31.27],[32.55,29.97],[33.0,29.2],[33.5,28.5],[34.25,27.73],[34.45,28.2],[34.65,28.9],[34.9,29.5]];
+const ASIA=[...PEN,...IRAN,...LEVANT];
+const AFRICA=[[22,32.1],[25.15,31.6],[27.2,31.4],[29.0,30.95],[29.9,31.2],[30.4,31.45],[31.0,31.58],[31.8,31.45],[32.3,31.27],[32.55,29.97],[32.7,29.4],[33.2,28.5],[33.6,27.8],[33.8,27.25],[34.3,26.1],[34.9,25.0],[35.6,23.9],[36.0,22.9],[36.9,22.0],[37.2,19.6],[38.5,18.0],[39.45,15.6],[40.6,14.6],[41.7,13.6],[42.74,13.0],[43.3,12.2],[43.15,11.6],[44.5,10.4],[45.0,10.45],[47.5,11.1],[49.5,11.3],[51.27,11.83],[51.3,5],[22,5]];
+const ISLES=[[[50.45,25.95],[50.62,25.95],[50.62,26.25],[50.45,26.25]],[[53.3,12.5],[54.0,12.75],[54.5,12.6],[54.0,12.3],[53.4,12.35]],[[32.3,34.7],[33.0,34.56],[34.0,34.95],[34.6,35.7],[33.6,35.4],[32.3,35.15]],[[23.5,35.4],[26.3,35.3],[25.6,35.0],[23.5,35.15]]];
+const LAKES=[[[35.4,31.05],[35.55,31.05],[35.58,31.75],[35.45,31.77]],[[35.53,32.72],[35.65,32.72],[35.65,32.88],[35.55,32.9]]];
+const RIVERS=[
+ [[31.0,31.5],[31.25,30.05],[31.2,29.3],[30.8,28.5],[30.85,27.6],[31.2,27.2],[31.7,26.6],[32.4,26.1],[32.65,25.7],[32.9,24.1],[32.88,23.3],[31.35,21.8],[30.47,19.17],[31.8,18.55],[33.3,19.53],[33.98,17.7],[32.53,15.6],[32.6,13],[32.7,10.5]],
+ [[31.25,30.05],[30.4,31.45]],[[31.25,30.05],[31.8,31.45]],
+ [[38.2,39],[38.3,37.1],[38.1,36.3],[39.0,35.95],[40.15,35.33],[40.9,34.45],[41.95,34.15],[42.8,33.6],[43.3,33.35],[43.8,33.1],[44.35,32.55],[44.9,32.0],[45.6,31.3],[46.3,31.05],[47.0,31.0],[47.43,31.0]],
+ [[40.2,39],[41.5,37.5],[42.2,37.33],[42.9,36.7],[43.13,36.34],[43.3,35.6],[43.68,34.6],[44.2,33.9],[44.38,33.33],[45.0,32.8],[45.8,32.5],[46.6,31.9],[47.15,31.8],[47.43,31.0],[48.0,30.45],[48.5,29.98]],
+ [[35.6,33.2],[35.6,32.88]],[[35.57,32.72],[35.55,32.2],[35.52,31.77]]
+];
+const RIDGES=[[[36.0,28.5],[37.5,26.2],[38.8,24.5],[40.2,21.8],[41.6,19.2],[43.0,16.8],[44.0,14.5],[44.5,13.2]],[[56.2,26.0],[56.5,24.7],[57.5,23.3],[58.8,22.8]],[[35.9,35.8],[36.2,34.6],[36.0,33.6],[35.8,33.0]]];
+
+/* Labels drawn in screen pixels: [text, lon, lat, rotate, px, kind, minLvl, maxLvl] */
+const MAPLABELS=[
+ ['البحر الأحمر',38.0,21.0,63,15,'sea',0,1],['البحر الأحمر',38.6,22.6,62,15,'sea',1,1],
+ ['الخليج العربي',51.6,27.4,22,15,'sea',0,1],['بحر العرب',59.0,16.5,0,16,'sea',0,0],['خليج عدن',48.0,12.5,8,12.5,'sea',0,0],
+ ['خليج عُمان',58.8,24.6,-28,12,'sea',0,0],['البحر المتوسط',29.5,33.7,0,15,'sea',0,1],
+ ['نجد',44.8,25.9,0,17,'reg',0,0],['اليمن',44.2,14.0,0,16,'reg',0,1],
+ ['حضرموت',50.6,15.5,0,14,'reg',0,1],['عُمان',57.0,21.3,0,16,'reg',0,0],['بلاد الشام',37.6,34.7,0,16,'reg',0,1],['مصر',29.4,27.0,0,17,'reg',0,1],
+ ['سيناء',33.7,29.7,0,13,'reg',1,1],['العراق',45.4,34.3,0,17,'reg',0,1],['النفود',41.5,28.3,0,13,'des',0,1],['الربع الخالي',50.5,20.0,0,15,'des',0,1],
+ ['النيل',31.6,25.4,-62,12,'riv',0,1],['الفرات',41.4,34.6,-25,12,'riv',1,1],['دجلة',43.95,34.9,-55,12,'riv',1,1]
+];
+const CITIES=[['جدة',39.17,21.49,1],['ينبع',38.06,24.09,1],['رابغ',39.03,22.8,1],['الطائف',40.42,21.27,1],['الرياض',46.72,24.71,1],['الكويت',47.98,29.37,0],['مسقط',58.4,23.6,0],['عدن',45.03,12.8,1],['دمشق',36.29,33.51,1],['بغداد',44.37,33.31,1]];
+
+/* =========================================================
+   PLACES   g: city | mk (Mecca area) | md (Medina area) | ev (event) | st (story)
+   ========================================================= */
+const P={
+ makkah:{n:'مكة المكرمة',lat:21.4225,lon:39.8262,lv:0,s:'b',g:'city',c:'#e7a65a',d:'البلد الحرام وموضع الكعبة. نزل فيها أغلب القرآن قبل الهجرة، في نحو ثلاث عشرة سنة.'},
+ madinah:{n:'المدينة المنورة',lat:24.4672,lon:39.6111,lv:0,s:'r',g:'city',c:'#4cc79f',d:'يثرب، دار الهجرة. نزلت فيها سور التشريع وبناء المجتمع، في نحو عشر سنين.'},
+ hira:{n:'غار حراء',lat:21.4576,lon:39.8579,lv:2,s:'t',g:'mk',d:'غار في جبل النور شمال شرق مكة، فيه نزل أول الوحي.'},
+ thawr:{n:'غار ثور',lat:21.377,lon:39.85,lv:2,s:'r',g:'mk',d:'غار في جبل ثور جنوب مكة، اختبأ فيه النبي وصاحبه ثلاثاً في طريق الهجرة.'},
+ mina:{n:'منى',lat:21.4133,lon:39.8933,lv:2,s:'r',g:'mk',d:'مشعر بين مكة وعرفة، رُوي أن سورة النصر نزلت فيه في حجة الوداع.'},
+ arafat:{n:'عرفة',lat:21.3549,lon:39.9842,lv:2,s:'b',g:'mk',d:'المشعر الأعظم في الحج، ورُوي فيه نزول «اليوم أكملت لكم دينكم».'},
+ hudaybiyyah:{n:'الحديبية',lat:21.44,lon:39.65,lv:1,s:'l',g:'mk',d:'موضع الصلح سنة 6هـ، على حدود الحرم غرب مكة.'},
+ nakhla:{n:'بطن نخلة',lat:21.58,lon:40.12,lv:1,s:'r',g:'ev',ap:1,d:'وادٍ بين مكة والطائف، رُوي فيه استماع نفر من الجن للقرآن.'},
+ kura:{n:'كُراع الغميم',lat:21.9,lon:39.42,lv:1,s:'l',g:'ev',ap:1,d:'موضع على طريق مكة والمدينة قرب عُسفان، رُوي فيه نزول سورة الفتح.'},
+ muraysi:{n:'المُرَيسيع',lat:22.3,lon:39.35,lv:1,s:'r',g:'ev',ap:1,d:'ماء لبني المصطلق جهة قُدَيد، كانت عنده الغزوة سنة 5 أو 6هـ.'},
+ juhfa:{n:'الجحفة',lat:22.70,lon:39.14,lv:1,s:'l',g:'ev',d:'ميقات أهل الشام، مرّ بها النبي في طريق الهجرة.'},
+ ghadir:{n:'غدير خم',lat:22.82,lon:39.24,lv:1,s:'r',g:'ev',ap:1,d:'موضع قرب الجحفة، تذكر روايات كثيرة خطبة النبي فيه بعد حجة الوداع.'},
+ badr:{n:'بدر',lat:23.78,lon:38.79,lv:1,s:'l',g:'ev',d:'موضع الغزوة الكبرى سنة 2هـ، جنوب غرب المدينة.'},
+ tabuk:{n:'تبوك',lat:28.38,lon:36.57,lv:0,s:'r',g:'ev',d:'آخر غزوات النبي سنة 9هـ، في شمال الجزيرة.'},
+ uhud:{n:'جبل أُحد',lat:24.5005,lon:39.615,lv:3,s:'t',g:'md',d:'جبل شمال المدينة، كانت عنده غزوة أحد سنة 3هـ.'},
+ quba:{n:'مسجد قباء',lat:24.4393,lon:39.6172,lv:3,s:'b',g:'md',d:'أول مسجد بُني في الإسلام، عند قدوم النبي مهاجراً جنوب المدينة.'},
+ khandaq:{n:'الخندق',lat:24.4783,lon:39.5995,lv:3,s:'t',g:'md',d:'موضع الخندق الذي حُفر في شمال المدينة الغربي سنة 5هـ.'},
+ qiblatayn:{n:'مسجد القبلتين',lat:24.4842,lon:39.5787,lv:3,s:'l',g:'md',d:'مسجد بني سلمة، رُوي أن الأمر بتحويل القبلة جاء والنبي يصلي فيه.'},
+ qurayza:{n:'ديار بني قريظة',lat:24.448,lon:39.632,lv:3,s:'r',g:'md',ap:1,d:'حصون بني قريظة في جنوب شرق المدينة.'},
+ nadir:{n:'ديار بني النضير',lat:24.43,lon:39.655,lv:3,s:'r',g:'md',ap:1,d:'حصون بني النضير في العالية جنوب المدينة، أُجلوا منها سنة 4هـ.'},
+ hijr:{n:'الحِجر · ديار ثمود',lat:26.79,lon:37.95,lv:0,s:'l',g:'st',d:'ديار قوم صالح المنحوتة في الصخر، شمال الحجاز (مدائن صالح).'},
+ madyan:{n:'مدين',lat:28.48,lon:35.0,lv:1,s:'b',g:'st',d:'ديار قوم شعيب شرق خليج العقبة، وإليها خرج موسى من مصر.'},
+ ayla:{n:'أيلة',lat:29.53,lon:35.0,lv:1,s:'r',g:'st',d:'«القرية التي كانت حاضرة البحر» في قول كثير من المفسرين، على رأس خليج العقبة.'},
+ tur:{n:'طور سيناء',lat:28.54,lon:33.97,lv:0,s:'l',g:'st',d:'الجبل الذي كلّم الله عنده موسى، و«الوادي المقدس طوى».'},
+ misr:{n:'مصر',lat:29.85,lon:31.25,lv:0,s:'l',g:'st',d:'أرض يوسف ثم موسى وفرعون، على النيل.'},
+ aqsa:{n:'المسجد الأقصى',lat:31.778,lon:35.235,lv:0,s:'l',g:'st',d:'منتهى الإسراء، وأرض الأنبياء المباركة.'},
+ bethlehem:{n:'بيت لحم',lat:31.705,lon:35.2,lv:2,s:'b',g:'st',ap:1,d:'في روايات المفسرين موضع ولادة عيسى، جنوب بيت المقدس.'},
+ lut:{n:'قرى قوم لوط',lat:31.2,lon:35.45,lv:1,s:'r',g:'st',ap:1,d:'جهة البحر الميت على أشهر الأقوال.'},
+ babil:{n:'بابل',lat:32.54,lon:44.42,lv:0,s:'r',g:'st',d:'«ببابل هاروت وماروت»، وفي روايات أن إبراهيم كان بكُوثى من أرضها.'},
+ nineveh:{n:'نينوى',lat:36.36,lon:43.15,lv:0,s:'r',g:'st',d:'قرية يونس على دجلة قرب الموصل.'},
+ judi:{n:'جبل الجودي',lat:37.37,lon:42.35,lv:1,s:'l',g:'st',ap:1,d:'حيث استوت سفينة نوح، ونقل الطبري أنه جبل بالجزيرة قرب الموصل.'},
+ ahqaf:{n:'الأحقاف · ديار عاد',lat:17.6,lon:48.6,lv:0,s:'r',g:'st',ap:1,d:'رمال جنوب الجزيرة بين اليمن وعُمان على أشهر الأقوال، ديار قوم هود.'},
+ saba:{n:'سبأ · مأرب',lat:15.43,lon:45.33,lv:0,s:'r',g:'st',d:'مملكة سبأ وسدّها العظيم، في اليمن.'},
+ najran:{n:'نجران',lat:17.49,lon:44.13,lv:0,s:'l',g:'st',d:'موضع أصحاب الأخدود في رواية الطبري، وقدم وفد نصاراها على النبي.'},
+ darawan:{n:'ضَرَوان',lat:15.43,lon:44.15,lv:1,s:'l',g:'st',ap:1,d:'قرية قرب صنعاء، ذكر الطبري أنها موضع «أصحاب الجنة» في سورة القلم.'}
+};
+const GCOL={mk:'#f2c48d',md:'#8fe0c4',ev:'#e9eef8'};
+
+const REGIONS=[
+ {id:'pen',n:'الجزيرة العربية',c:'#efe3c6',b:[33.6,60,12,31.6]},
+ {id:'hijaz',n:'الحجاز',c:'#d9b26b',b:[37.4,41.6,20.7,25.0]},
+ {id:'makkah',n:'مكة وما حولها',c:'#e7a65a',b:[39.6,40.45,21.25,21.9]},
+ {id:'madinah',n:'المدينة وما حولها',c:'#4cc79f',b:[39.54,39.7,24.41,24.53]},
+ {id:'north',n:'شمال الحجاز ومدين',c:'#c58cf0',b:[34.0,39.0,25.8,30.0]},
+ {id:'sham',n:'الشام وسيناء ومصر',c:'#ff9a7a',b:[29.8,37.4,27.6,33.4]},
+ {id:'iraq',n:'العراق',c:'#9fd36b',b:[40.6,48.6,30.0,38.0]},
+ {id:'yemen',n:'اليمن وجنوب الجزيرة',c:'#6fc3ff',b:[42.6,52.0,12.6,19.2]},
+ {id:'all',n:'الخريطة كاملة',c:'#a3abc0',b:[24.5,62,11,38.5]}
+];
+/* =========================================================
+   SURAHS
+   ========================================================= */
+const RAW=`الفاتحة|7|k|الحمد والعبودية وطلب الهداية إلى الصراط المستقيم
+البقرة|286|m|أصول الإيمان وتشريعات الأمة الناشئة وعبر من تاريخ بني إسرائيل
+آل عمران|200|m|الثبات على الحق، والحوار مع أهل الكتاب، ودروس غزوة أُحد
+النساء|176|m|العدل في الأسرة والمجتمع وحفظ حقوق الضعفاء واليتامى
+المائدة|120|m|الوفاء بالعقود، وإكمال الدين، وأحكام الحلال والحرام
+الأنعام|165|k|التوحيد ومحاجّة المشركين بآيات الخلق والرزق
+الأعراف|206|k|قصص الأنبياء مع أقوامهم وسنن الهلاك والنجاة
+الأنفال|75|m|دروس بدر، وأن النصر من عند الله، وأحكام الغنائم
+التوبة|129|m|البراءة من المشركين، وكشف المنافقين، وغزوة تبوك
+يونس|109|k|صدق الوحي والبعث، وقوم يونس الذين نفعهم إيمانهم
+هود|123|k|ثبات الأنبياء أمام التكذيب، وطوفان نوح
+يوسف|111|k|أحسن القصص: الابتلاء والصبر الجميل ثم التمكين
+الرعد|43|m|آيات الكون، وأن ذكر الله طمأنينة القلوب
+إبراهيم|52|k|دعاء إبراهيم لمكة، وشكر النعمة، ومثل الكلمة الطيبة
+الحجر|99|k|حفظ الذكر، وقصة إبليس، وأصحاب الحجر
+النحل|128|k|تعداد النعم والدعوة إلى الشكر والعدل والإحسان
+الإسراء|111|k|الإسراء، ومنهج القرآن الذي يهدي للتي هي أقوم
+الكهف|110|k|أربع قصص في فتن الدين والمال والعلم والسلطان
+مريم|98|k|رحمة الله بأنبيائه: زكريا ويحيى ومريم وعيسى وإبراهيم
+طه|135|k|قصة موسى المطوّلة، وأن القرآن لم ينزل للشقاء
+الأنبياء|112|k|وحدة رسالة الأنبياء ونجاتهم بالدعاء
+الحج|78|m|شعائر الحج، والإذن بالقتال دفاعاً، وأهوال القيامة
+المؤمنون|118|k|صفات المفلحين وأطوار خلق الإنسان
+النور|64|m|آداب الأسرة والعفاف، وحادثة الإفك، وآية النور
+الفرقان|77|k|الفرقان بين الحق والباطل وصفات عباد الرحمن
+الشعراء|227|k|سبع قصص للأنبياء تُختم بـ«وإن ربك لهو العزيز الرحيم»
+النمل|93|k|سليمان والنملة والهدهد وملكة سبأ
+القصص|88|k|نشأة موسى، ووعد التمكين للمستضعفين، وقارون
+العنكبوت|69|k|سنّة الابتلاء، ووهن بيت العنكبوت
+الروم|60|k|وعد غلبة الروم، وآيات الله في الأنفس والآفاق
+لقمان|34|k|وصايا لقمان لابنه، وشكر الوالدين
+السجدة|30|k|الخلق والبعث وحال المؤمنين في قيام الليل
+الأحزاب|73|m|غزوة الخندق وآداب بيت النبي
+سبأ|54|k|نعمة سبأ وزوالها، وشكر داود وسليمان
+فاطر|45|k|قدرة الخالق وفقر الخلق إليه
+يس|83|k|البعث، وقصة أصحاب القرية، وآيات الكون
+الصافات|182|k|الملائكة، ورؤيا إبراهيم والفداء، ونجاة يونس
+ص|88|k|داود وسليمان وأيوب، وقصة إبليس
+الزمر|75|k|إخلاص الدين، وسعة الرحمة «لا تقنطوا»
+غافر|85|k|مؤمن آل فرعون، والدعاء المستجاب
+فصلت|54|k|إعراض المكذبين وشهادة الجوارح عليهم
+الشورى|53|k|الوحي، والشورى، والعفو والصفح
+الزخرف|89|k|غرور زينة الدنيا وتقليد الآباء
+الدخان|59|k|الليلة المباركة وعذاب الدخان
+الجاثية|37|k|آيات الله في الكون، والجثوّ يوم القيامة
+الأحقاف|35|k|قوم عاد في الأحقاف، واستماع الجن للقرآن، وبرّ الوالدين
+محمد|38|m|القتال في سبيل الله وأحوال المنافقين
+الفتح|29|m|صلح الحديبية فتحاً مبيناً، وبيعة الرضوان
+الحجرات|18|m|أدب المجتمع: التثبت والأخوة وترك الغيبة والسخرية
+ق|45|k|البعث، ورقابة الملكين، والقرب الإلهي
+الذاريات|60|k|الرزق المقدّر، وضيف إبراهيم، وغاية الخلق
+الطور|49|k|نعيم المتقين وتحدي المكذبين
+النجم|62|k|الوحي والمعراج وسدرة المنتهى
+القمر|55|k|انشقاق القمر و«ولقد يسرنا القرآن للذكر»
+الرحمن|78|m|تعداد النعم «فبأي آلاء ربكما تكذبان»
+الواقعة|96|k|الأصناف الثلاثة يوم القيامة
+الحديد|29|m|الإنفاق والخشوع، وإنزال الحديد والميزان
+المجادلة|22|m|المرأة التي جادلت في زوجها، والظهار، وآداب المجالس
+الحشر|24|m|إجلاء بني النضير، وأسماء الله الحسنى
+الممتحنة|13|m|الولاء للمؤمنين، وامتحان المهاجرات
+الصف|14|m|أن يوافق القول الفعل، وبشارة عيسى بأحمد
+الجمعة|11|m|صلاة الجمعة وتزكية الأمة بالكتاب
+المنافقون|11|m|كشف أقوال المنافقين ونفاقهم
+التغابن|18|m|يوم التغابن، وفتنة المال والأولاد
+الطلاق|12|m|أحكام الطلاق والعدة، ووعد المخرج للمتقي
+التحريم|12|m|حادثة في بيت النبي، وأمثال من النساء
+الملك|30|k|الملك لله، والخلق المتقن، والتفكر في السماء
+القلم|52|k|الخلق العظيم، وأصحاب الجنة
+الحاقة|52|k|أهوال القيامة وصدق الوحي
+المعارج|44|k|هلع الإنسان، وصفات المصلين
+نوح|28|k|دعوة نوح الطويلة، وفضل الاستغفار
+الجن|28|k|استماع نفر من الجن للقرآن وإيمانهم
+المزمل|20|k|قيام الليل، وإعداد الرسول للقول الثقيل
+المدثر|56|k|الأمر بالإنذار، وعاقبة المكذّب
+القيامة|40|k|النفس اللوامة، وجمع القرآن وبيانه
+الإنسان|31|m|خلق الإنسان، وجزاء الأبرار الذين يطعمون المسكين
+المرسلات|50|k|«ويل يومئذ للمكذبين»
+النبأ|40|k|النبأ العظيم وآيات الخلق
+النازعات|46|k|موسى وفرعون، والطامّة الكبرى
+عبس|42|k|عتاب في شأن الأعمى، ونعمة الطعام
+التكوير|29|k|انقلاب الكون يوم القيامة
+الانفطار|19|k|«ما غرّك بربك الكريم»
+المطففين|36|k|الويل للمطففين، وكتاب الأبرار
+الانشقاق|25|k|الكدح إلى الله وأخذ الكتاب
+البروج|22|k|أصحاب الأخدود والثبات على الإيمان
+الطارق|17|k|الحفظة على النفوس، وخلق الإنسان
+الأعلى|19|k|التسبيح والتزكية
+الغاشية|26|k|التفكر في الإبل والسماء والجبال والأرض
+الفجر|30|k|عاد وإرم وثمود وفرعون، والنفس المطمئنة
+البلد|20|k|اقتحام العقبة بإطعام المحتاج
+الشمس|15|k|تزكية النفس، وناقة صالح
+الليل|21|k|اختلاف السعي، وثمرة العطاء
+الضحى|11|k|الطمأنينة بعد فتور الوحي، ورعاية اليتيم
+الشرح|8|k|شرح الصدر و«إن مع العسر يسرا»
+التين|8|k|خلق الإنسان في أحسن تقويم
+العلق|19|k|أول الوحي «اقرأ»، وطغيان الإنسان
+القدر|5|k|ليلة القدر
+البينة|8|m|إخلاص الدين، وخير البرية
+الزلزلة|8|m|زلزلة الأرض، ومثقال الذرة
+العاديات|11|k|الخيل العادية، وكنود الإنسان
+القارعة|11|k|الموازين يوم القيامة
+التكاثر|8|k|الانشغال بالتكاثر عن الآخرة
+العصر|3|k|سبيل النجاة: الإيمان والعمل والتواصي بالحق والصبر
+الهمزة|9|k|ذمّ الهمز واللمز وجمع المال
+الفيل|5|k|إهلاك أصحاب الفيل
+قريش|4|k|نعمة الأمن والرزق ورحلتا الشتاء والصيف
+الماعون|7|k|الصلاة الحقة والمعروف الصغير
+الكوثر|3|k|عطاء الكوثر للنبي
+الكافرون|6|k|المفاصلة في العبادة
+النصر|3|m|النصر والفتح والاستغفار
+المسد|5|k|مصير أبي لهب
+الإخلاص|4|k|التوحيد الخالص
+الفلق|5|k|الاستعاذة من الشرور الظاهرة
+الناس|6|k|الاستعاذة من الوسواس الخنّاس`;
+
+
+const PLACE_OVR={96:'hira',72:'nakhla',48:'kura',63:'muraysi',110:'mina'};
+const DISPUTED=new Set([13,22,55,64,76,83,98,99,108,112,113,114]);
+const SUBS={
+ 2:[['makkah','ليلة المبيت: «ومن الناس من يشري نفسه ابتغاء مرضات الله» (207) في علي بن أبي طالب حين بات في فراش النبي.',['mb']],['makkah','«ومن الناس من يشري نفسه ابتغاء مرضات الله» (207) في صهيب الرومي حين ترك ماله ليهاجر.',['t','ik']],['qiblatayn','آية تحويل القبلة (144): رُوي أن الأمر بالتحويل جاء والنبي يصلي في مسجد بني سلمة، فسُمّي مسجد القبلتين.'],['makkah','رفع إبراهيم وإسماعيل القواعد من البيت (127).'],['babil','«وما أُنزل على الملكين ببابل هاروت وماروت» (102).'],['aqsa','الذي مرّ على قرية وهي خاوية على عروشها (259)، ونقل الطبري أنها بيت المقدس.']],
+ 3:[['uhud','نحو ستين آية في غزوة أحد، تبدأ بقوله «وإذ غدوت من أهلك تبوئ المؤمنين مقاعد للقتال» (121).'],['najran','صدر السورة، وآية المباهلة (61) في وفد نصارى نجران.']],
+ 5:[['arafat','آية «اليوم أكملت لكم دينكم» (3): رُوي نزولها عشية عرفة في حجة الوداع.',['t','ik','r']],['ghadir','آية التبليغ (67) وآية الإكمال (3): روايات نزولهما بغدير خم في شأن علي.',['mb']]],
+ 7:[['ahqaf','عاد وهود (65–72).'],['hijr','ثمود وناقة صالح (73–79).'],['lut','قوم لوط (80–84).'],['madyan','شعيب وأهل مدين (85–93).'],['misr','موسى وفرعون والسحرة (103–137).'],['tur','ميقات موسى وتجلّي ربه للجبل (143).'],['ayla','القرية حاضرة البحر وحيتان السبت (163–166).']],
+ 8:[['badr','نزلت السورة في أحداث بدر: الملائكة المُمِدّة، والمطر، والغنائم.']],
+ 9:[['tabuk','كثير من آياتها في غزوة تبوك والمتخلفين عنها.'],['thawr','«ثاني اثنين إذ هما في الغار» (40).'],['quba','«لمسجد أُسّس على التقوى من أول يوم» (108)، وفي المراد به أقوال منها مسجد قباء.']],
+ 10:[['misr','غرق فرعون و«فاليوم ننجيك ببدنك لتكون لمن خلفك آية» (92).'],['nineveh','قوم يونس الذين نفعهم إيمانهم (98).']],
+ 11:[['judi','استواء السفينة على الجودي (44).'],['ahqaf','عاد وهود (50–60).'],['hijr','ثمود وصالح (61–68).'],['lut','قرى قوم لوط (77–83).'],['madyan','شعيب وأهل مدين (84–95).']],
+ 12:[['misr','دخول يوسف مصر وتمكينه على خزائن الأرض.']],
+ 14:[['makkah','دعاء إبراهيم «ربنا إني أسكنت من ذريتي بواد غير ذي زرع عند بيتك المحرم» (37).']],
+ 15:[['hijr','«ولقد كذّب أصحاب الحجر المرسلين» (80).'],['lut','ضيف إبراهيم وقوم لوط (51–77).']],
+ 17:[['aqsa','الآية الأولى: الإسراء من المسجد الحرام إلى المسجد الأقصى.']],
+ 19:[['bethlehem','ولادة عيسى عند جذع النخلة (22–26).'],['tur','«وناديناه من جانب الطور الأيمن» (52).']],
+ 20:[['tur','النداء بالوادي المقدس طوى (12).'],['misr','موسى وفرعون والسحرة (49–79).']],
+ 21:[['babil','إبراهيم وتحطيم الأصنام والنار (51–70)، ورُوي أنه كان بكُوثى من أرض بابل.'],['nineveh','يونس ونداؤه في الظلمات (87–88).']],
+ 26:[['misr','موسى وفرعون (10–68).'],['ahqaf','عاد وهود (123–140).'],['hijr','ثمود وصالح (141–159).'],['lut','قوم لوط (160–175).'],['madyan','أصحاب الأيكة وشعيب (176–191).']],
+ 27:[['saba','الهدهد ونبأ ملكة سبأ (20–44).']],
+ 28:[['juhfa','«إن الذي فرض عليك القرآن لرادّك إلى معاد» (85): رُوي نزولها بالجحفة في طريق الهجرة.'],['misr','نشأة موسى في بيت فرعون، وقارون (76–82).'],['madyan','موسى عند ماء مدين (22–28).'],['tur','«آنس من جانب الطور ناراً» (29).']],
+ 33:[['khandaq','«إذ جاءوكم من فوقكم ومن أسفل منكم» (10): حصار الأحزاب للمدينة.'],['qurayza','«وأنزل الذين ظاهروهم من أهل الكتاب من صياصيهم» (26): بنو قريظة.']],
+ 34:[['saba','جنّتا سبأ وسيل العرم (15–19).']],
+ 37:[['nineveh','يونس والحوت (139–148).']],
+ 40:[['misr','مؤمن آل فرعون (28–45).']],
+ 43:[['misr','«أليس لي ملك مصر» (51).']],
+ 46:[['nakhla','الآيات (29–32) في نفر الجن الذين استمعوا القرآن.'],['ahqaf','«واذكر أخا عاد إذ أنذر قومه بالأحقاف» (21).']],
+ 48:[['hudaybiyyah','موضع الصلح وبيعة الرضوان تحت الشجرة (18).']],
+ 52:[['tur','القسم بالطور في أول السورة.']],
+ 54:[['ahqaf','عاد (18–22).'],['hijr','ثمود (23–32).'],['lut','قوم لوط (33–40).']],
+ 59:[['nadir','إجلاء بني النضير من حصونهم (2).']],
+ 68:[['darawan','أصحاب الجنة (17–33)، ونُقل أنها بضَرَوان قرب صنعاء.',['t','ik']]],
+ 69:[['ahqaf','«وأما عاد فأُهلكوا بريح صرصر عاتية» (6).'],['hijr','«فأما ثمود فأُهلكوا بالطاغية» (5).']],
+ 79:[['tur','«إذ ناداه ربه بالواد المقدس طوى» (16).'],['misr','موسى وفرعون (17–26).']],
+ 85:[['najran','أصحاب الأخدود (4–9)، ويُروى أنهم بنجران.',['t','ik']]],
+ 89:[['ahqaf','«إرم ذات العماد» (7).'],['hijr','«وثمود الذين جابوا الصخر بالواد» (9).'],['misr','«وفرعون ذي الأوتاد» (10).']],
+ 91:[['hijr','ناقة صالح وتكذيب ثمود (11–15).']],
+ 95:[['tur','«وطور سينين» (2).']],
+ 105:[]
+};
+/* NOTES: [sources[], text]  t=الطبري  ik=ابن كثير  mb=الطبرسي (مجمع البيان)  r=روايات عامة تظهر دائماً */
+const NOTES={
+ 1:[[['r'],'الأكثر على أنها مكية، وروي أنها نزلت مرتين: بمكة ثم بالمدينة.']],
+ 2:[[['t','ik','mb'],'أول ما نزل بالمدينة في أكثر الأقوال، وامتد نزولها سنوات.'],
+    [['mb'],'آية «ومن الناس من يشري نفسه ابتغاء مرضات الله» (207): يرويها في علي بن أبي طالب حين بات في فراش النبي ليلة الهجرة.'],
+    [['t','ik'],'الآية نفسها (207): يذكران أنها نزلت في صهيب الرومي حين ترك ماله لقريش ليهاجر، وأنها عامة في كل من باع نفسه لله.']],
+ 3:[[['t','ik','mb'],'نزل صدرها في وفد نصارى نجران، وشطرٌ منها في غزوة أحد.'],
+    [['t','ik','mb'],'آية المباهلة (61): خرج النبي لمباهلة وفد نجران ومعه علي وفاطمة والحسن والحسين.']],
+ 5:[[['t','ik'],'«اليوم أكملت لكم دينكم» (3): روي عن عمر أنها نزلت عشية عرفة في حجة الوداع، يوم جمعة.'],
+    [['ik'],'ويذكر رواية نزولها يوم غدير خم ويضعّفها.'],
+    [['mb'],'يورد روايات أن آية التبليغ (67) وآية الإكمال (3) نزلتا في غدير خم في شأن علي بن أبي طالب.'],
+    [['ik'],'«والله يعصمك من الناس» (67): يذكر حديث عائشة أن النبي كان يُحرس حتى نزلت، فصرف الحرس.'],
+    [['mb'],'آية الولاية (55) «إنما وليكم الله ورسوله والذين آمنوا الذين يقيمون الصلاة ويؤتون الزكاة وهم راكعون»: يعتمد نزولها في علي حين تصدّق بخاتمه وهو راكع.'],
+    [['t'],'آية الولاية (55): يورد الرواية في علي ضمن أقوال أخرى، منها أنها عامة في المؤمنين.'],
+    [['ik'],'آية الولاية (55): يذكر روايات التصدق بالخاتم، ويقول إنه لا يصح شيء منها لضعف أسانيدها.']],
+ 8:[[['t','ik','mb'],'نزلت في بدر حين اختلف الصحابة في الأنفال (الغنائم).']],
+ 9:[[['r'],'لم تُبدأ بالبسملة، ونزل صدرها سنة 9هـ وبُلّغ في موسم الحج.']],
+ 11:[[['t','ik'],'الجودي جبل بالجزيرة قرب الموصل، استوت عليه السفينة.']],
+ 17:[[['t','ik','mb'],'تبدأ بالإسراء، والثلاثة على أنه كان بالروح والجسد يقظة.']],
+ 18:[[['t','ik'],'روي أن قريشاً سألت النبي، بإشارة من أحبار يهود، عن الفتية والرجل الطوّاف والروح، فنزلت.']],
+ 19:[[['t'],'يفسّر «سريّاً» في الآية 24 بالجدول أو النهر الصغير.']],
+ 28:[[['t'],'ينقل عن ابن عباس أن «معاد» في الآية 85 هي مكة، أي وعدٌ بالعودة إليها.']],
+ 30:[[['t','ik','mb'],'نزلت أوائلها بعد غلبة الفرس للروم، ووعدت بانتصار الروم في بضع سنين.'],
+     [['t','ik'],'ويذكران رهان أبي بكر للمشركين على تحقّق هذا الوعد.']],
+ 33:[[['t','ik','mb'],'نزل معظمها في غزوة الخندق وحصار بني قريظة.'],
+     [['mb'],'آية التطهير (33): يجعلها خاصة بالنبي وعلي وفاطمة والحسن والحسين، أهل الكساء.'],
+     [['t'],'آية التطهير (33): يورد روايات كثيرة أنها في أهل الكساء الخمسة، وقولاً آخر أنها في نساء النبي.'],
+     [['ik'],'آية التطهير (33): يرى أنها تشمل نساء النبي لأنهن سبب النزول، وتشمل أهل الكساء بدلالة حديث الكساء.']],
+ 37:[[['t'],'يرجّح أن الذبيح في قصة الفداء إسحاق.'],[['ik','mb'],'يرجّحان أن الذبيح إسماعيل.']],
+ 38:[[['t'],'يورد في قصة داود والخصمين (21–25) روايات عن امرأة «أوريا».'],
+     [['ik'],'يعدّ تلك الروايات من الإسرائيليات ولا يعتمد عليها.'],
+     [['mb'],'يرفض تلك الروايات لمنافاتها عصمة الأنبياء.']],
+ 42:[[['mb'],'آية المودة (23) «قل لا أسألكم عليه أجرا إلا المودة في القربى»: يفسّر القربى بأهل بيت النبي: علي وفاطمة وابنيهما.'],
+     [['t','ik'],'آية المودة (23): يذكران هذا القول، ويرجّحان قول ابن عباس: إلا أن تودّوني لقرابتي منكم.']],
+ 48:[[['t','ik','mb'],'نزلت في طريق العودة من الحديبية بين مكة والمدينة.'],
+     [['t','ik'],'وفي حديث عمر قال النبي: «لقد أُنزلت عليّ الليلة سورة لهي أحب إليّ مما طلعت عليه الشمس».']],
+ 58:[[['t','ik','mb'],'نزلت في خولة بنت ثعلبة حين ظاهر منها زوجها فجاءت تشتكي إلى النبي.']],
+ 59:[[['t','ik','mb'],'نزلت في إجلاء بني النضير، وكان ابن عباس يسميها «سورة بني النضير».']],
+ 63:[[['t','ik','mb'],'نزلت في عبد الله بن أُبيّ حين قال في غزوة بني المصطلق: «لئن رجعنا إلى المدينة ليخرجن الأعز منها الأذل»، وهي رواية زيد بن أرقم.']],
+ 66:[[['t','ik','mb'],'يذكرون روايتين في سبب نزول أولها: تحريم العسل، أو تحريم مارية.']],
+ 68:[[['t','ik'],'نُقل أن أصحاب الجنة كانوا بضَرَوان قرب صنعاء.']],
+ 72:[[['t','ik'],'استمع نفر من الجن إلى النبي ببطن نخلة، وفي رواية ابن عباس في الصحيح أنه كان في طريقه إلى سوق عكاظ.'],
+     [['r'],'وفي رواية ابن إسحاق أن ذلك كان عند منصرفه من الطائف.']],
+ 76:[[['mb'],'يعدّها مدنية، ويورد روايات في نزول «ويطعمون الطعام على حبه مسكينا ويتيما وأسيرا» في علي وفاطمة والحسن والحسين.'],
+     [['r'],'ويعدّها بعض المفسرين مكية.']],
+ 80:[[['t','ik'],'العتاب في شأن ابن أم مكتوم الأعمى حين جاء والنبي يدعو كبراء قريش.'],
+     [['mb'],'ينقل قولاً آخر يرجّحه: أنها نزلت في رجل من بني أمية عبس في وجه الأعمى، تنزيهاً للنبي.']],
+ 83:[[['r'],'روي عن ابن عباس أنها نزلت أول مقدم النبي المدينة، وكان أهلها يطففون الكيل؛ وهي في المصاحف مكية.']],
+ 85:[[['t','ik'],'يذكران أن أصحاب الأخدود كانوا بنجران.']],
+ 93:[[['t','ik','mb'],'نزلت بعد فتور الوحي مدة، حين قال المشركون: ودّعه ربه.']],
+ 96:[[['t','ik','mb'],'أول ما نزل من القرآن صدر هذه السورة «اقرأ باسم ربك» في غار حراء.']],
+ 105:[[['t','ik','mb'],'حادثة أبرهة الذي جاء من اليمن ليهدم الكعبة، في العام الذي وُلد فيه النبي.']],
+ 108:[[['t','ik','mb'],'نزلت حين عيّر العاصُ بن وائل النبيَّ بأنه «أبتر» لا ولد له.'],
+      [['ik'],'ويذكر حديث أنس أن الكوثر نهر في الجنة أُعطيه النبي.'],
+      [['mb'],'ويذكر من أقوال الكوثر كثرة الذرية، وأنها من ولد فاطمة.']],
+ 110:[[['r'],'روي عن ابن عمر أنها نزلت بمنى في أيام التشريق من حجة الوداع.'],
+      [['t','ik'],'وفهم منها ابن عباس وعمر قرب أجل النبي.']],
+ 111:[[['t','ik','mb'],'نزلت حين صعد النبي الصفا ينذر قومه، فقال أبو لهب: تبّاً لك.']]
+};
+
+const SRC_LBL={t:['t','الطبري'],ik:['ik','ابن كثير'],mb:['mb','الطبرسي'],r:['','روايات']};
+const S=RAW.trim().split('\n').map((l,i)=>{const [name,ay,t,theme]=l.split('|');const n=i+1;
+  return {n,name,ay:+ay,t,theme,place:PLACE_OVR[n]||(t==='k'?'makkah':'madinah'),disp:DISPUTED.has(n),subs:SUBS[n]||[],notes:NOTES[n]||[]};});
+
+const ORDER=[96,68,73,74,1,111,81,87,92,89,93,94,103,100,108,102,107,109,105,113,114,112,53,80,97,91,85,95,106,101,75,104,77,50,90,86,54,38,7,72,36,25,35,19,20,56,26,27,28,17,10,11,12,15,6,37,31,34,39,40,41,42,43,44,45,46,51,88,18,16,71,14,21,23,32,52,67,69,70,78,79,82,84,30,29,83,2,8,3,33,60,4,99,57,47,13,55,76,65,98,59,24,22,63,58,49,66,64,61,62,48,5,9,110];
+const ORD={}; ORDER.forEach((n,i)=>ORD[n]=i+1);
+
+/* =========================================================
+   TIMELINE  rows: [when, sub, events[[title, date, text, surah?]], surahs, anchoredSurahs]
+   ========================================================= */
+const MECCAN_PHASES=[
+ {when:'أوائل العهد المكي',sub:'نحو السنوات 1–4 من البعثة · 610–614م',from:1,to:29,ev:[
+   ['بدء الوحي','السنة 1 من البعثة · 610م · والنبي في الأربعين','في غار حراء نزل صدر «اقرأ باسم ربك»، ثم فتر الوحي مدة وعاد بـ«يا أيها المدثر».',96],
+   ['الدعوة سرّاً','السنوات 1–3','دعا النبي أهل بيته وأقرب الناس إليه، فآمنت خديجة وعلي وأبو بكر وزيد بن حارثة.'],
+   ['الجهر بالدعوة','نحو السنة 3 · 613م','صعد النبي الصفا ينذر قريشاً، فاعترضه أبو لهب، فنزلت «تبّت يدا أبي لهب».',111]
+ ]},
+ {when:'أواسط العهد المكي',sub:'نحو السنوات 5–9 · 615–619م',from:30,to:58,ev:[
+   ['الهجرة إلى الحبشة','السنة 5 · 615م','هاجر نفر من المسلمين إلى النجاشي فراراً من الأذى، وفي الهجرة الثانية قرأ جعفر صدر سورة مريم على النجاشي.',19],
+   ['غلبة الفرس للروم','نحو 614–615م','هُزم الروم في «أدنى الأرض» ففرح المشركون، فنزل صدر سورة الروم يعد بغلبتهم في بضع سنين.',30],
+   ['إسلام حمزة وعمر','نحو السنة 6','قوي بهما المسلمون وصلّوا عند الكعبة.'],
+   ['حصار الشِّعب','السنوات 7–10 · 617–619م','قاطعت قريش بني هاشم وحاصرتهم في شعب أبي طالب نحو ثلاث سنين.']
+ ]},
+ {when:'أواخر العهد المكي',sub:'نحو السنوات 10–13 · 619–622م',from:59,to:86,ev:[
+   ['عام الحزن ورحلة الطائف','السنة 10 · 619م','توفي أبو طالب وخديجة، وخرج النبي إلى الطائف فرُدّ، وفي منصرفه ببطن نخلة استمع إليه نفر من الجن.',72],
+   ['الإسراء والمعراج','نحو السنة 11–12','أُسري بالنبي من المسجد الحرام إلى المسجد الأقصى، وفُرضت الصلوات الخمس.',17],
+   ['بيعتا العقبة','السنتان 12–13 · 621–622م','بايع نفر من الأوس والخزرج النبي عند العقبة بمنى، فكانت تمهيداً للهجرة.']
+ ]}
+];
+const MEDINAN_YEARS=[
+ {when:'1هـ',sub:'622م · عمر النبي 53',ev:[['ليلة المبيت','ليلة الهجرة','بات علي بن أبي طالب في فراش النبي ليفدّيه بنفسه، وفيه يروي الطبرسي نزول «ومن الناس من يشري نفسه ابتغاء مرضات الله».',2,['mb']],['الهجرة','ربيع الأول 1هـ','خرج النبي مع أبي بكر إلى غار ثور ثم إلى المدينة، ونزل بقباء وبنى مسجدها، ثم بنى المسجد النبوي وآخى بين المهاجرين والأنصار.',9]],s:[2],note:'ورُوي عن ابن عباس أن سورة المطففين نزلت أول مقدمه المدينة.'},
+ {when:'2هـ',sub:'623–624م',ev:[['تحويل القبلة','نحو رجب 2هـ','تحوّلت القبلة من بيت المقدس إلى الكعبة.',2],['فرض صيام رمضان','شعبان 2هـ','نزلت آيات الصيام في سورة البقرة (183–187).',2],['غزوة بدر','17 رمضان 2هـ','أول مواجهة كبرى مع قريش، وفيها نزلت سورة الأنفال.',8]],s:[8]},
+ {when:'3هـ',sub:'625م',ev:[['غزوة أُحد','شوال 3هـ','نزل في دروسها نحو ستين آية من آل عمران.',3]],s:[3,4],note:'سورة النساء نزل أكثرها بعد أحد في نحو 3–5هـ، ومن أسباب آيات الميراث فيها شهداء أحد.'},
+ {when:'4هـ',sub:'625–626م',ev:[['إجلاء بني النضير','ربيع الأول 4هـ','نقضوا العهد فحوصروا ثم أُجلوا، ونزلت سورة الحشر.',59]],s:[59]},
+ {when:'5هـ',sub:'626–627م',ev:[['غزوة بني المصطلق','شعبان 5 أو 6هـ','عند ماء المريسيع ظهر قول ابن أُبيّ، فنزلت سورة المنافقون. وفي العودة كانت حادثة الإفك ونزلت براءة عائشة في سورة النور.',63],['غزوة الخندق','شوال 5هـ','حاصرت الأحزاب المدينة نحو شهر، ونزلت سورة الأحزاب.',33],['بنو قريظة','ذو القعدة 5هـ','حوصروا بعد نقضهم العهد في الخندق.',33]],s:[63,24,33]},
+ {when:'6هـ',sub:'628م',ev:[['صلح الحديبية','ذو القعدة 6هـ','مُنع المسلمون من العمرة فصالحوا قريشاً، وفي طريق العودة نزلت سورة الفتح.',48]],s:[48]},
+ {when:'7هـ',sub:'628–629م',ev:[['فتح خيبر','محرم 7هـ','وعدت سورة الفتح بمغانم يأخذونها (20)، ففُتحت خيبر.',48],['عمرة القضاء','ذو القعدة 7هـ','دخل المسلمون مكة معتمرين كما وعدت «لتدخلن المسجد الحرام» (الفتح 27).',48]],s:[]},
+ {when:'8هـ',sub:'629–630م',ev:[['فتح مكة','رمضان 8هـ','قبله كتب حاطب إلى قريش بخبر المسير، فنزل صدر سورة الممتحنة.',60],['غزوة حنين','شوال 8هـ','«ويوم حنين إذ أعجبتكم كثرتكم» (التوبة 25).',9]],s:[60]},
+ {when:'9هـ',sub:'630–631م',ev:[['غزوة تبوك','رجب 9هـ','آخر الغزوات، وفي شأنها والمتخلفين عنها كثير من سورة التوبة.',9],['البراءة وعام الوفود','ذو الحجة 9هـ','بُلّغ صدر سورة التوبة في موسم الحج، وتوالت وفود العرب، وفي وفد بني تميم نزل صدر الحجرات.',49],['المباهلة','نحو 9–10هـ','قدم وفد نصارى نجران، فدعاهم النبي إلى المباهلة وخرج ومعه علي وفاطمة والحسن والحسين، ونزلت آية المباهلة في آل عمران.',3]],s:[9,49]},
+ {when:'10هـ',sub:'632م',ev:[['حجة الوداع','ذو الحجة 10هـ','حجّ النبي حجته الوحيدة وخطب في الناس، وبمنى رُوي نزول سورة النصر.',110],['يوم عرفة','9 ذو الحجة 10هـ','روي عن عمر نزول «اليوم أكملت لكم دينكم» عشية عرفة.',5,['t','ik','r']],['غدير خم','18 ذو الحجة 10هـ','في طريق العودة خطب النبي بغدير خم وقال: «من كنت مولاه فعليٌّ مولاه». ويورد الطبرسي نزول آية التبليغ وآية الإكمال فيه.',5,['mb']]],s:[5,110]},
+ {when:'11هـ',sub:'632م · عمر النبي 63',ev:[['وفاة النبي','ربيع الأول 11هـ','توفي النبي في المدينة بعد اكتمال نزول القرآن في نحو ثلاث وعشرين سنة.']],s:[]}
+];
+/* =========================================================
+   MAP ENGINE — one projection, animated viewBox, pins sized in screen px
+   ========================================================= */
+const $=id=>document.getElementById(id);
+const COL={k:'var(--makki)',m:'var(--madani)'};
+const RM=matchMedia('(prefers-reduced-motion:reduce)');
+let ASP=0.8, vb={x:0,y:0,w:800,h:640}, spec=null, focus=null, anim=null, sel=0, region='pen';
+let filt='all', query='', sortBy='mushaf';
+let TF='all'; try{TF=localStorage.getItem('atlas-tafsir')||'all';}catch(e){}
+const TF_NAME={all:'الثلاثة معاً',t:'الطبري',ik:'ابن كثير',mb:'الطبرسي'};
+const tfOK=tags=>!tags||TF==='all'||tags.includes(TF)||tags.includes('r');
+const subsOf=s=>s.subs.filter(x=>tfOK(x[2]));
+
+const pathOf=(pts,close)=>'M'+pts.map(([lo,la])=>proj(lo,la).map(n=>n.toFixed(1)).join(',')).join('L')+(close?'Z':'');
+function placesOf(s){return [...new Set([s.place,...subsOf(s).map(x=>x[0])])];}
+function lvlOf(w){const z=800/w;return z<3?0:z<15?1:z<80?2:3;}
+function bbOfLonLat(b){const a=proj(b[0],b[3]),c=proj(b[1],b[2]);return [a[0],a[1],c[0],c[1]];}
+function fit(sp){
+  const [x0,y0,x1,y1]=sp.bb, cx=(x0+x1)/2, cy=(y0+y1)/2;
+  const w=Math.max((x1-x0)*sp.pad,(y1-y0)*sp.pad/ASP,sp.minW||0), h=w*ASP;
+  let x=cx-w/2, y=cy-h/2;
+  x=w<=800?Math.max(0,Math.min(800-w,x)):400-w/2;
+  y=h<=H0?Math.max(0,Math.min(H0-h,y)):H0/2-h/2;
+  return {x,y,w,h};
+}
+const regionSpec=id=>({bb:bbOfLonLat(REGIONS.find(r=>r.id===id).b),pad:1.02});
+function placesSpec(keys){
+  const pts=keys.map(k=>proj(P[k].lon,P[k].lat)), xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const maxLv=Math.max(...keys.map(k=>P[k].lv));
+  return {bb:[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)],pad:1.7,minW:[260,110,18,4][maxLv]};
+}
+
+function drawStatic(){
+  const svg=$('map');
+  let o=`<defs>
+   <linearGradient id="landG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262e46"/><stop offset="1" stop-color="#1f2539"/></linearGradient>
+   <radialGradient id="seaG" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#12233f"/><stop offset="1" stop-color="#0a1529"/></radialGradient>
+   <pattern id="dune" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r=".55" fill="#c9a96b" fill-opacity=".35"/><circle cx="3.7" cy="3.7" r=".45" fill="#c9a96b" fill-opacity=".25"/></pattern>
+   <radialGradient id="haloMk"><stop offset="0" stop-color="#e7a65a" stop-opacity=".55"/><stop offset="1" stop-color="#e7a65a" stop-opacity="0"/></radialGradient>
+   <radialGradient id="haloMd"><stop offset="0" stop-color="#4cc79f" stop-opacity=".55"/><stop offset="1" stop-color="#4cc79f" stop-opacity="0"/></radialGradient>
+   <radialGradient id="haloSel"><stop offset="0" stop-color="#f3cf6e" stop-opacity=".6"/><stop offset="1" stop-color="#f3cf6e" stop-opacity="0"/></radialGradient>
+  </defs>`;
+  o+=`<rect x="-3000" y="-3000" width="7000" height="7000" fill="url(#seaG)"/>`;
+  for(let lo=25;lo<62;lo+=1){const [x]=proj(lo,0);o+=`<line x1="${x}" y1="-2000" x2="${x}" y2="3000" stroke="#9fb4e0" stroke-opacity="${lo%5?0.02:0.055}" vector-effect="non-scaling-stroke"/>`;}
+  for(let la=11;la<39;la+=1){const [,y]=proj(0,la);o+=`<line x1="-2000" y1="${y}" x2="3000" y2="${y}" stroke="#9fb4e0" stroke-opacity="${la%5?0.02:0.055}" vector-effect="non-scaling-stroke"/>`;}
+  // coast glow + land
+  [AFRICA,ASIA].forEach(poly=>{o+=`<path d="${pathOf(poly,1)}" fill="none" stroke="#3f6fb0" stroke-opacity=".35" stroke-width="5" vector-effect="non-scaling-stroke"/>`;});
+  o+=`<path d="${pathOf(AFRICA,1)}" fill="#1b2133" stroke="var(--coast)" stroke-width="1.1" vector-effect="non-scaling-stroke"/>`;
+  o+=`<path d="${pathOf(ASIA,1)}" fill="url(#landG)" stroke="var(--coast)" stroke-width="1.3" vector-effect="non-scaling-stroke"/>`;
+  ISLES.forEach(i=>o+=`<path d="${pathOf(i,1)}" fill="url(#landG)" stroke="var(--coast)" stroke-width="1" vector-effect="non-scaling-stroke"/>`);
+  // deserts
+  const ell=(lo,la,rx,ry)=>{const [x,y]=proj(lo,la);return `<ellipse cx="${x}" cy="${y}" rx="${rx*K0*C0}" ry="${ry*K0}" fill="url(#dune)"/>`;};
+  o+=ell(41.5,28.3,2.3,.8)+ell(50.5,19.8,4.6,2.1)+ell(46.6,24.8,.5,2.6)+ell(30.0,27.0,2.2,1.4);
+  // ridges as small chevrons
+  RIDGES.forEach(r=>{for(let i=0;i<r.length-1;i++){const [a,b]=[proj(...r[i]),proj(...r[i+1])];const n=Math.max(2,Math.round(Math.hypot(b[0]-a[0],b[1]-a[1])/9));
+    for(let k=0;k<n;k++){const x=a[0]+(b[0]-a[0])*k/n,y=a[1]+(b[1]-a[1])*k/n;o+=`<path d="M${x-2.2},${y+1.6}L${x},${y-1.6}L${x+2.2},${y+1.6}" fill="none" stroke="#8a7a5c" stroke-opacity=".55" stroke-width="1" vector-effect="non-scaling-stroke"/>`;}}});
+  RIVERS.forEach(r=>o+=`<path d="${pathOf(r)}" fill="none" stroke="#3f80c8" stroke-opacity=".75" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`);
+  LAKES.forEach(l=>o+=`<path d="${pathOf(l,1)}" fill="#13284a" stroke="#3f80c8" stroke-width="1" vector-effect="non-scaling-stroke"/>`);
+  // haram areas (geographic, show on zoom)
+  const area=(k,r,col,label)=>{const [x,y]=proj(P[k].lon,P[k].lat);return `<ellipse cx="${x}" cy="${y}" rx="${r*K0*C0}" ry="${r*K0}" fill="${col}" fill-opacity=".09" stroke="${col}" stroke-opacity=".55" stroke-dasharray="3 3" stroke-width="1.2" vector-effect="non-scaling-stroke"/>`;};
+  o+=area('makkah',.11,'#e7a65a')+area('madinah',.055,'#4cc79f');
+  // Mecca–Medina road
+  o+=`<path d="${pathOf([[39.8262,21.4225],[39.6,21.75],[39.42,21.9],[39.14,22.7],[38.95,23.3],[38.79,23.78],[39.25,24.2],[39.6111,24.4672]])}" fill="none" stroke="#efe3c6" stroke-opacity=".28" stroke-dasharray="4 5" stroke-width="1.4" vector-effect="non-scaling-stroke"/>`;
+  o+=`<g id="labels"></g><g id="cities"></g><g id="pins"></g>`;
+  svg.innerHTML=o;
+}
+
+function txt(t,x,y,anc,size,fill,weight,fam,extra){
+  return `<text x="${x}" y="${y}" text-anchor="${anc}" direction="rtl" font-size="${size}" fill="${fill}" font-weight="${weight||500}" ${fam?`font-family="${fam}"`:''} stroke="#0a1426" stroke-width="${Math.max(3,size/4)}" paint-order="stroke" stroke-linejoin="round" ${extra||''}>${t}</text>`;
+}
+function renderLayers(lv){
+  if(lv==null)lv=lvlOf(vb.w);
+  // map labels
+  let L='';
+  MAPLABELS.forEach(([t,lo,la,rot,px,kind,mn,mx])=>{const [x,y]=proj(lo,la);const show=lv>=mn&&lv<=mx;
+    const fill=kind==='sea'?'#7f9dcc':kind==='riv'?'#6aa6e6':kind==='des'?'#b39a6a':'#6c7698';
+    const fam=kind==='reg'?'Reem Kufi, IBM Plex Sans Arabic, sans-serif':'';
+    L+=`<g class="sc" data-x="${x}" data-y="${y}" style="opacity:${show?(focus?.35:.95):0}"><g transform="rotate(${rot})">${txt(t,0,0,'middle',px,fill,kind==='reg'?700:500,fam,'stroke-opacity=".6"')}</g></g>`;});
+  $('labels').innerHTML=L;
+  let c='';
+  CITIES.forEach(([n,lo,la,clv])=>{const [x,y]=proj(lo,la);const show=clv<=lv;
+    c+=`<g class="sc" data-x="${x}" data-y="${y}" style="opacity:${show?(focus?.35:1):0}"><circle r="4" fill="#0e1322" stroke="#8a93ad" stroke-width="1.6"/>${txt(n,-8,5,'start',14,'#aab2c8',500)}</g>`;});
+  $('cities').innerHTML=c;
+  // pins
+  const hl=new Set(focus?(focus.t==='s'?placesOf(S[focus.n-1]):[focus.k]):[]);
+  const counts={}; S.forEach(x=>counts[x.place]=(counts[x.place]||0)+1);
+  const order=Object.keys(P).sort((a,b)=>(P[a].g==='city')-(P[b].g==='city'));
+  let o='';
+  order.forEach(key=>{
+    const pl=P[key], [x,y]=proj(pl.lon,pl.lat), on=hl.has(key), visible=on||pl.lv<=lv, dim=focus&&!on;
+    const op=!visible?0:dim?.16:1;
+    let g=`<g class="pin sc" data-place="${key}" data-x="${x}" data-y="${y}" tabindex="${visible?0:-1}" role="button" aria-label="${pl.n}" style="opacity:${op};pointer-events:${visible?'auto':'none'}"><circle r="22" fill="transparent"/>`;
+    let r=9;
+    if(pl.g==='city'){
+      const n=counts[key]||0; r=13+Math.sqrt(n)*.95;
+      g+=`<circle r="${r*2.6}" fill="url(#${on?'haloSel':key==='makkah'?'haloMk':'haloMd'})"/>`;
+      if(on)g+=`<circle class="pulse" r="${r+4}" fill="none" stroke="var(--story)" stroke-width="3"/>`;
+      g+=`<circle class="core" r="${r}" fill="${pl.c}" stroke="${on?'#fff':'#0e1322'}" stroke-width="2.5"/>`;
+      g+=`<text y="5" text-anchor="middle" font-size="14" font-weight="700" fill="#0e1322">${n}</text>`;
+      const ly=pl.s==='b'?r+24:7, lx=pl.s==='r'?r+10:0, anc=pl.s==='r'?'end':'middle';
+      g+=txt(pl.n,lx,ly,anc,20,on?'#fff':pl.c,700,'Reem Kufi, IBM Plex Sans Arabic, sans-serif');
+    } else {
+      if(on)g+=`<circle class="pulse" r="${r+5}" fill="none" stroke="var(--story)" stroke-width="3"/>`;
+      if(pl.g==='st'){r=10;g+=`<rect class="core" x="${-r*.72}" y="${-r*.72}" width="${r*1.44}" height="${r*1.44}" transform="rotate(45)" fill="${on?'var(--story)':'var(--storyfill)'}" stroke="var(--story)" stroke-width="2" ${pl.ap?'stroke-dasharray="3 2"':''}/>`;}
+      else{const col=GCOL[pl.g];g+=`<circle class="core" r="${r}" fill="${on?'var(--story)':'#0e1322'}" stroke="${col}" stroke-width="2.6" ${pl.ap?'stroke-dasharray="4 3"':''}/><circle r="3" fill="${on?'#0e1322':col}"/>`;}
+      const showLabel=on?(pl.lv<=lv+1||focus.t==='p'):(pl.lv<=lv&&!dim);
+      if(showLabel){const off=r+7;let tx=0,ty=5,anc='middle';
+        if(pl.s==='r'){tx=off;anc='end';}else if(pl.s==='l'){tx=-off;anc='start';}else if(pl.s==='t'){ty=-off-3;}else{ty=off+15;}
+        g+=txt(pl.n,tx,ty,anc,15,on?'#fff':pl.g==='st'?'#e6d6ff':'#efe3c6',on?700:500);}
+    }
+    o+=g+'</g>';});
+  $('pins').innerHTML=o; applyVB();
+}
+function applyVB(){
+  const svg=$('map');
+  svg.setAttribute('viewBox',`${vb.x.toFixed(3)} ${vb.y.toFixed(3)} ${vb.w.toFixed(3)} ${vb.h.toFixed(3)}`);
+  const cw=Math.max(1,svg.clientWidth||800), s=vb.w/cw*Math.min(1,Math.max(.72,cw/720));
+  svg.querySelectorAll('.sc').forEach(g=>g.setAttribute('transform',`translate(${g.dataset.x} ${g.dataset.y}) scale(${s})`));
+}
+function goTo(sp,instant){
+  spec=sp; const t=fit(sp);
+  if(anim)cancelAnimationFrame(anim);
+  renderLayers(lvlOf(t.w));
+  if(instant||RM.matches){vb=t;applyVB();return;}
+  const f={...vb}, t0=performance.now(), D=900;
+  const step=now=>{let k=Math.min(1,(now-t0)/D);k=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+    const w=Math.exp(Math.log(f.w)+(Math.log(t.w)-Math.log(f.w))*k);
+    vb={x:f.x+(t.x-f.x)*k,y:f.y+(t.y-f.y)*k,w,h:w*ASP};applyVB();
+    if(k<1)anim=requestAnimationFrame(step);else{vb=t;applyVB();anim=null;}};
+  anim=requestAnimationFrame(step);
+}
+function measure(){const svg=$('map');const w=svg.clientWidth,h=svg.clientHeight;if(w&&h)ASP=h/w;}
+function onResize(){const old=ASP;measure();if(spec&&Math.abs(old-ASP)>.001){goTo(spec,true);}else applyVB();}
+function renderRegions(){
+  $('regions').innerHTML=REGIONS.map(r=>`<button class="seg" style="--c:${r.c}" data-region="${r.id}" aria-pressed="${!focus&&region===r.id}"><i></i>${r.n}</button>`).join('')+`<button class="backbtn" id="mapBack" data-back ${focus?'':'hidden'}>→ رجوع</button>`;
+}
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+function srcTag(k){const [c,l]=SRC_LBL[k];return `<span class="src ${c}">${l}</span>`;}
+const srcTags=tags=>tags.filter(k=>k!=='r'||tags.length===1).map(srcTag).join('');
+const tfBar=()=>`<div class="tfbar"><span>التفسير المعروض:</span>${Object.keys(TF_NAME).map(k=>`<button data-tf="${k}" aria-pressed="${TF===k}">${TF_NAME[k]}</button>`).join('')}</div>`;
+const backBar=()=>`<div class="cardtop"><button class="backbtn" data-back>→ رجوع إلى الخريطة</button></div>`;
+const storyMini=st=>`<div class="mini"><svg viewBox="0 0 320 200" role="img" aria-label="${st.title}">${st.svg}</svg><div><b>${st.title}</b><p class="ayah" style="font-size:18px">﴿${st.ayah}﴾</p><button class="linkbtn" data-story="${st.id}">القصة كاملة وتفسير الصورة</button></div></div>`;
+function eventsForSurah(n){
+  return [...MECCAN_PHASES.flatMap(p=>p.ev),...MEDINAN_YEARS.flatMap(y=>y.ev)].filter(e=>e[3]===n&&tfOK(e[4]));
+}
+function surahCard(n){
+  const s=S[n-1], pl=P[s.place], o=ORD[n];
+  let h=backBar();
+  h+=`<div class="hero"><div class="bigord">${s.n}</div><div><div class="num">سورة · ${s.ay} آية</div><h3>${s.name}</h3></div></div>`;
+  h+=`<div class="tags"><span class="tag ${s.t}">${s.t==='k'?'مكية':'مدنية'}</span>${s.disp?'<span class="tag d">مختلف فيها</span>':''}<span class="tag">نزلت في: ${pl.n}</span><button class="tag tagbtn" data-ord="${n}">ترتيب النزول ${o} من 114</button></div>`;
+  h+=`<div class="lbl">موضوع السورة</div><p class="theme">${s.theme}</p>`;
+  h+=`<div class="lbl">موضع النزول</div><p class="note" style="margin-top:4px"><button class="linkbtn" data-goplace="${s.place}">${pl.n}</button>${pl.ap?' (موقع تقريبي)':''}: ${pl.d}</p>`;
+  const ns=s.notes.filter(x=>tfOK(x[0]));
+  h+=`<div class="lbl">من التفسير وأسباب النزول</div>`;
+  ns.forEach(([tags,t])=>h+=`<p class="note">${srcTags(tags)}${t}</p>`);
+  if(s.disp)h+=`<p class="note">${srcTag('r')}اختُلف في مكيّتها ومدنيّتها، والتصنيف هنا على ما في المصاحف المتداولة.</p>`;
+  if(!ns.length&&!s.disp)h+=`<p class="note" style="color:var(--muted)">لا توجد هنا ملاحظة خاصة في سبب نزولها${TF!=='all'?' عند '+TF_NAME[TF]:''}.</p>`;
+  h+=tfBar();
+  const sb=subsOf(s);
+  if(sb.length){h+=`<div class="lbl">مواضع وأحداث مرتبطة بآياتها — اضغط لتنتقل إليها</div>`;
+    sb.forEach(([k,t,tags])=>h+=`<div class="ev"><b><button class="linkbtn" data-goplace="${k}">${P[k].n}</button></b><span>${tags&&TF==='all'?srcTags(tags):''}${t}</span></div>`);}
+  const evs=eventsForSurah(n); if(evs.length){h+=`<div class="lbl">في السيرة</div>`;evs.forEach(e=>h+=`<div class="evbox"><b>◆ ${e[0]}</b> · ${e[1]}<br>${e[2]}</div>`);}
+  const prevS=ORDER[o-2], nextS=ORDER[o];
+  h+=`<div class="lbl">في سياق التنزيل</div><p class="note" style="margin-top:4px">نزلت بعد ${prevS?`<button class="linkbtn" data-sel="${prevS}">${S[prevS-1].name}</button>`:'— (أول ما نزل)'}، وقبل ${nextS?`<button class="linkbtn" data-sel="${nextS}">${S[nextS-1].name}</button>`:'— (آخر السور نزولاً)'}.</p>`;
+  const sts=STORIES.filter(x=>x.s===n||(x.also||[]).includes(n)); if(sts.length){h+=`<div class="lbl">قصص مصوّرة من هذه السورة</div>`;sts.forEach(st=>h+=storyMini(st));}
+  const cs=CONST.filter(c=>c.v.some(v=>v[1]===n));
+  if(cs.length){h+=`<div class="lbl">أبراج التأمل التي فيها آية من هذه السورة</div>`;cs.forEach(c=>{const v=c.v.find(x=>x[1]===n);h+=`<div class="refl" style="--c:${c.c}"><p class="ayah" style="font-size:19px;color:${c.c};margin:0">﴿${v[3]}﴾</p><p style="margin:2px 0 0;font-size:14px">تتصل ${['','بآية أخرى','بآيتين أخريين','بثلاث آيات أخرى'][c.v.length-1]} في برج «${c.t}». <button class="linkbtn" data-cst="${c.id}" data-from="${v[0]}">صِلها وتأمّل</button></p></div>`;});}
+  h+=`<div class="ctrl" style="margin-top:16px">${n>1?`<button data-sel="${n-1}">→ ${S[n-2].name}</button>`:''}${n<114?`<button data-sel="${n+1}">${S[n].name} ←</button>`:''}</div>`;
+  return h;
+}
+function placeCard(key){
+  const pl=P[key], prim=S.filter(s=>s.place===key), rel=S.filter(s=>subsOf(s).some(x=>x[0]===key));
+  const kind=pl.g==='st'?'موضع قصة قرآنية':pl.g==='city'?'مدينة نزول':'موضع نزول أو حدث';
+  let h=backBar()+`<div class="num">${kind}${pl.ap?' · موقع تقريبي':''}</div><h3 style="font-size:30px">${pl.n}</h3><p class="theme" style="font-size:15.5px">${pl.d}</p>`;
+  if(prim.length){h+=`<div class="lbl">ما نزل فيه: ${prim.length} سورة — اختر سورة لتفاصيلها</div><div class="grid" style="margin-top:6px">`+prim.map(chip).join('')+'</div>';}
+  if(rel.length){h+=`<div class="lbl">آيات وسور مرتبطة به</div>`;rel.forEach(s=>{const t=subsOf(s).filter(x=>x[0]===key).map(x=>x[1]).join(' · ');h+=`<div class="ev"><b><button class="linkbtn" data-sel="${s.n}">${s.name}</button></b><span>${t}</span></div>`;});}
+  const sts=STORIES.filter(x=>x.place===key); if(sts.length){h+=`<div class="lbl">قصص مصوّرة في هذا الموضع</div>`;sts.forEach(st=>h+=storyMini(st));}
+  return h;
+}
+function openCard(html){
+  const p=$('panel'); p.innerHTML=html; p.hidden=false; p.classList.remove('in'); void p.offsetWidth; p.classList.add('in'); p.scrollTop=0;
+  $('atlasBox').classList.add('focus'); $('overview').hidden=true; renderRegions(); requestAnimationFrame(measure);
+}
+function enterFocus(n){
+  showTab('map'); sel=n; focus={t:'s',n}; openCard(surahCard(n));
+  requestAnimationFrame(()=>{measure();goTo(placesSpec(placesOf(S[n-1])));}); window.scrollTo(0,0);
+}
+function enterPlace(k){
+  showTab('map'); focus={t:'p',k}; openCard(placeCard(k));
+  requestAnimationFrame(()=>{measure();goTo(placesSpec([k]));}); window.scrollTo(0,0);
+}
+function exitFocus(){
+  if(!focus)return; focus=null;
+  $('panel').hidden=true; $('atlasBox').classList.remove('focus'); $('overview').hidden=false;
+  region='pen'; renderRegions(); renderGrid();
+  requestAnimationFrame(()=>{measure();goTo(regionSpec('pen'));});
+}
+
+/* =========================================================
+   SURAH GRID
+   ========================================================= */
+function chip(s){const num=sortBy==='nuzul'?ORD[s.n]:s.n;return `<button class="sbtn${s.disp?' dd':''}" style="--c:${COL[s.t]}" data-sel="${s.n}" aria-pressed="${s.n===sel}" title="رقمها في المصحف ${s.n} · ترتيب نزولها ${ORD[s.n]}"><span class="n">${num}</span>${s.name}</button>`;}
+function renderGrid(){
+  const q=query.trim(), base=sortBy==='nuzul'?ORDER.map(n=>S[n-1]):S;
+  const list=base.filter(s=>{
+    if(filt==='k'&&s.t!=='k')return false; if(filt==='m'&&s.t!=='m')return false; if(filt==='d'&&!s.disp)return false;
+    if(filt==='x'&&(s.place==='makkah'||s.place==='madinah')&&!subsOf(s).some(x=>x[0]!==s.place))return false;
+    if(q&&!(s.name.includes(q)||String(s.n)===q))return false; return true;});
+  $('grid').innerHTML=list.map(chip).join('')||'<p class="sub">لا توجد سور تطابق البحث.</p>';
+  $('pf').textContent=`${list.length} سورة`;
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+const TABS=['map','order','stories','reflect','about'];
+function showTab(t){
+  if(!TABS.includes(t))t='map';
+  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+  document.querySelectorAll('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==t);
+  try{history.replaceState(null,'',t==='map'?location.pathname+location.search:'#'+t);}catch(e){}
+  if(t==='map')requestAnimationFrame(onResize);
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+function tchip(n,anc){const s=S[n-1];return `<button class="tchip${anc?' anc':''}" style="--c:${COL[s.t]}" data-sel="${n}"><span>${ORD[n]}</span>${s.name}</button>`;}
+function tev(e){if(!tfOK(e[4]))return '';return `<div class="tev"><b>◆ ${e[0]}</b><span class="yr">${e[1]}${e[4]&&TF==='all'?' '+srcTags(e[4]):''}</span><div>${e[2]}${e[3]?` <button class="linkbtn" data-sel="${e[3]}">سورة ${S[e[3]-1].name}</button>`:''}</div></div>`;}
+function buildTimeline(){
+  let h=`<div class="era" style="--c:var(--makki)">العهد المكي <small>نحو 13 سنة · 86 سورة</small></div><div class="tline" style="--c1:var(--makki);--c2:var(--makki)">`;
+  MECCAN_PHASES.forEach(p=>{const ids=ORDER.slice(p.from-1,p.to);const anc=new Set(p.ev.filter(e=>tfOK(e[4])).map(e=>e[3]).filter(Boolean));
+    h+=`<div class="trow" style="--c:var(--makki)"><div class="when">${p.when}<small>${p.sub}</small><small>ترتيب النزول ${p.from}–${p.to}</small></div><div class="what">${p.ev.map(tev).join('')}<div class="tsur">${ids.map(n=>tchip(n,anc.has(n))).join('')}</div></div></div>`;});
+  h+=`</div><div class="era" style="--c:var(--madani)">العهد المدني <small>نحو 10 سنين · 28 سورة</small></div><div class="tline" style="--c1:var(--madani);--c2:var(--madani)">`;
+  const placed=new Set();
+  MEDINAN_YEARS.forEach(y=>{y.s.forEach(n=>placed.add(n));
+    h+=`<div class="trow" style="--c:var(--madani)"><div class="when">${y.when}<small>${y.sub}</small></div><div class="what">${y.ev.map(tev).join('')}${y.s.length?`<div class="tsur">${y.s.map(n=>tchip(n,true)).join('')}</div>`:''}${y.note?`<div class="tnote">${y.note}</div>`:''}</div></div>`;});
+  const rest=ORDER.filter(n=>S[n-1].t==='m'&&!placed.has(n));
+  h+=`<div class="trow" style="--c:var(--muted)"><div class="when" style="--c:var(--muted)">غير محدّد<small>سور مدنية لا يُعرف عام نزولها بدقة</small></div><div class="what"><div class="tsur">${rest.map(n=>tchip(n,false)).join('')}</div><div class="tnote">مرتّبة بحسب ترتيب النزول المعتمد.</div></div></div></div>`;
+  $('timeline').innerHTML=h;
+}
+/* =========================================================
+   STORIES
+   ========================================================= */
+const STORIES=[
+{id:'nuh',s:11,title:'سفينة نوح',ayah:'وقيل يا أرض ابلعي ماءك ويا سماء أقلعي وغيض الماء وقضي الأمر واستوت على الجودي',ref:'هود: 44',
+ svg:`<rect width="320" height="200" fill="#1a2742"/><g fill="#3a4766"><ellipse cx="70" cy="34" rx="50" ry="18"/><ellipse cx="120" cy="28" rx="40" ry="16"/><ellipse cx="230" cy="30" rx="55" ry="17"/></g><g stroke="#7fa3d9" stroke-width="2" stroke-linecap="round" opacity=".7"><path d="M50 58l-6 14M80 56l-6 14M110 52l-6 14M200 54l-6 14M240 56l-6 14M270 52l-6 14"/></g><path d="M215 200L268 108L320 200Z" fill="#5c4b3b"/><path d="M252 136L268 108L284 136Z" fill="#7a6650"/><path d="M0 160Q20 148 40 160T80 160T120 160T160 160T200 160T240 160T280 160T320 160V200H0Z" fill="#24508c"/><g transform="translate(0 -4)"><path d="M88 150H212L198 172H102Z" fill="#8b5a2b"/><rect x="114" y="124" width="72" height="26" fill="#a8743f"/><path d="M108 124L150 106L192 124Z" fill="#6e4522"/><circle cx="132" cy="137" r="4" fill="#f3cf6e"/><circle cx="150" cy="137" r="4" fill="#f3cf6e"/><circle cx="168" cy="137" r="4" fill="#f3cf6e"/></g><path d="M0 176Q20 166 40 176T80 176T120 176T160 176T200 176T240 176T280 176T320 176V200H0Z" fill="#1c3f70"/>`,
+ expl:'<b>الغيوم والمطر</b> طوفانٌ أُمرت السماء فيه بالإمساك، <b>الأمواج</b> الماء الذي أُمرت الأرض أن تبتلعه، <b>السفينة</b> بنوافذها المضيئة نجاة من آمن، <b>الجبل</b> هو الجودي حيث استقرت. ونقل الطبري أن الجودي جبل بأرض الجزيرة شمال العراق.',
+ q:'ما «السفينة» التي تنجو بها أنت حين تشتد أمواج الحياة؟'},
+{id:'yusuf',s:12,title:'رؤيا يوسف والبئر',ayah:'إني رأيت أحد عشر كوكبا والشمس والقمر رأيتهم لي ساجدين',ref:'يوسف: 4',
+ svg:`<rect width="320" height="200" fill="#151c33"/><circle cx="110" cy="48" r="20" fill="#f3b94f"/><circle cx="210" cy="48" r="17" fill="#e9e3c9"/><circle cx="218" cy="42" r="15" fill="#151c33"/><g fill="#f3cf6e">${[[40,30],[60,70],[30,95],[80,20],[150,22],[170,70],[260,28],[285,70],[250,92],[140,92],[295,30]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.2"/>`).join('')}</g><rect y="150" width="320" height="50" fill="#5a4a33"/><ellipse cx="160" cy="150" rx="46" ry="12" fill="#2a2016"/><rect x="114" y="150" width="92" height="34" fill="#8b7a5c"/><g stroke="#6b5c43" stroke-width="2"><path d="M114 162H206M114 174H206M140 150V162M180 150V162M126 162V174M160 162V174M194 162V174"/></g><g stroke="#7a5230" stroke-width="5" stroke-linecap="round"><path d="M122 150V108M198 150V108M118 108H202"/></g><path d="M160 108V136" stroke="#c9b48a" stroke-width="2"/><rect x="152" y="136" width="16" height="12" rx="2" fill="#a8743f"/>`,
+ expl:'<b>أحد عشر كوكباً</b> إخوته، و<b>الشمس والقمر</b> أبواه، كما نقل الطبري في تأويل الرؤيا. <b>البئر</b> «غيابة الجب» التي أُلقي فيها، و<b>الدلو</b> هو الذي أدلاه السيارة فكان بداية الطريق إلى مصر.',
+ q:'كم مرة كان «البئر» في حياتك هو أول الطريق لا آخره؟'},
+{id:'musa',s:26,title:'انفلاق البحر',ayah:'فأوحينا إلى موسى أن اضرب بعصاك البحر فانفلق فكان كل فرق كالطود العظيم',ref:'الشعراء: 63',
+ svg:`<rect width="320" height="200" fill="#1d2a45"/><path d="M0 200V40Q20 30 40 40T80 40T110 46L128 200Z" fill="#2b6cb0"/><path d="M0 200V70Q25 60 50 70T95 74L112 200Z" fill="#1f5590"/><path d="M320 200V40Q300 30 280 40T240 40T210 46L192 200Z" fill="#2b6cb0"/><path d="M320 200V70Q295 60 270 70T225 74L208 200Z" fill="#1f5590"/><path d="M128 200L110 46H210L192 200Z" fill="#d8c08f"/><g fill="#b39c6e">${[[156,180],[164,166],[156,152],[164,138],[157,124],[163,110],[158,96],[162,82]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2.6" ry="4"/>`).join('')}</g><g stroke="#ffffff" stroke-opacity=".5" stroke-width="2" fill="none"><path d="M20 100q10-6 20 0M60 120q10-6 20 0M250 100q10-6 20 0M280 140q10-6 20 0"/></g><path d="M150 196L176 150" stroke="#8b5a2b" stroke-width="6" stroke-linecap="round"/><circle cx="176" cy="150" r="10" fill="#f3cf6e" opacity=".35"/>`,
+ expl:'<b>جداران من الماء</b> كل فِرق كالجبل العظيم، <b>الطريق اليابس</b> بينهما سلكه بنو إسرائيل، <b>آثار الأقدام</b> عبورهم، و<b>العصا المضيئة</b> هي سبب الأمر الإلهي. وروى الطبري أن البحر انفلق اثني عشر طريقاً بعدد الأسباط.',
+ q:'«كلا إن معي ربي سيهدين» ـ ما البحر الذي يقف أمامك الآن؟'},
+{id:'ibrahim',s:21,title:'النار بردٌ وسلام',ayah:'قلنا يا نار كوني بردا وسلاما على إبراهيم',ref:'الأنبياء: 69',
+ svg:`<rect width="320" height="200" fill="#1a1626"/><g fill="#d9542b">${[30,70,110,150,190,230,270].map(x=>`<path d="M${x} 200Q${x-8} 150 ${x+6} 120Q${x+10} 150 ${x+20} 130Q${x+26} 165 ${x+30} 200Z"/>`).join('')}</g><g fill="#f29a3a">${[45,125,205,265].map(x=>`<path d="M${x} 200Q${x-4} 170 ${x+8} 150Q${x+18} 175 ${x+18} 200Z"/>`).join('')}</g><circle cx="160" cy="130" r="58" fill="#1f4a55"/><circle cx="160" cy="130" r="58" fill="none" stroke="#7fe0d6" stroke-width="3" stroke-dasharray="3 6"/><path d="M160 178V112" stroke="#4cc79f" stroke-width="4"/><g fill="#4cc79f"><ellipse cx="146" cy="140" rx="14" ry="6" transform="rotate(-30 146 140)"/><ellipse cx="174" cy="128" rx="14" ry="6" transform="rotate(30 174 128)"/><ellipse cx="148" cy="118" rx="11" ry="5" transform="rotate(-30 148 118)"/></g><g fill="#ffd1e0"><circle cx="160" cy="106" r="7"/><circle cx="132" cy="160" r="5"/><circle cx="190" cy="156" r="5"/></g><g fill="#f3cf6e"><circle cx="160" cy="106" r="2.5"/><circle cx="132" cy="160" r="2"/><circle cx="190" cy="156" r="2"/></g><g stroke="#cfefff" stroke-width="1.6" stroke-linecap="round"><path d="M118 96l6 6M124 96l-6 6M200 100l6 6M206 100l-6 6"/></g>`,
+ expl:'<b>اللهب حول الأطراف</b> النار التي أُوقدت، و<b>الدائرة الزرقاء</b> برودة وسلامة في وسطها، و<b>النبات والزهر</b> حياة حيث يُتوقع الموت. ويروي الطبري أن النار لم تُحرق منه إلا الوَثاق الذي قُيّد به.',
+ q:'ما «النار» التي تخشاها، وهل تذكّرت أن أمرها بيد من يقول لها كوني؟'},
+{id:'yunus',s:21,title:'يونس في الظلمات',ayah:'فنادى في الظلمات أن لا إله إلا أنت سبحانك إني كنت من الظالمين',ref:'الأنبياء: 87',
+ svg:`<rect width="320" height="70" fill="#0b0f1e"/><g fill="#cfd8ff">${[[30,20],[80,40],[130,15],[200,30],[250,12],[290,45]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.6"/>`).join('')}</g><rect y="70" width="320" height="130" fill="#0f2a4a"/><path d="M0 70Q40 62 80 70T160 70T240 70T320 70V80H0Z" fill="#163a63"/><path d="M40 140Q60 100 140 104Q210 108 236 136Q246 128 262 118Q258 140 266 162Q246 152 236 146Q200 176 130 172Q60 170 40 140Z" fill="#203a5e"/><circle cx="76" cy="128" r="4" fill="#0b0f1e"/><path d="M50 148Q70 156 92 150" stroke="#0b0f1e" stroke-width="2" fill="none"/><circle cx="148" cy="140" r="16" fill="#f3cf6e" opacity=".25"/><circle cx="148" cy="140" r="7" fill="#f3cf6e"/><path d="M262 70Q292 58 320 66V70Z" fill="#4a3d2c"/><g fill="#5fcf7a"><ellipse cx="292" cy="54" rx="12" ry="7"/><ellipse cx="306" cy="48" rx="10" ry="6"/><ellipse cx="280" cy="48" rx="9" ry="5"/></g>`,
+ expl:'<b>ثلاث طبقات</b> هي الظلمات الثلاث: ظلمة الليل وظلمة البحر وظلمة بطن الحوت، كما روى الطبري عن ابن مسعود. و<b>النور الصغير</b> في بطن الحوت هو التسبيح الذي نجّاه، و<b>النبتة على الشاطئ</b> شجرة اليقطين التي أنبتها الله عليه بعد خروجه.',
+ q:'ما الدعاء الذي تحمله معك في ظلماتك الثلاث؟'},
+{id:'kahf',s:18,title:'أصحاب الكهف',ayah:'وترى الشمس إذا طلعت تزاور عن كهفهم ذات اليمين ... وكلبهم باسط ذراعيه بالوصيد',ref:'الكهف: 17–18',
+ svg:`<rect width="320" height="200" fill="#20304f"/><circle cx="276" cy="40" r="18" fill="#f3b94f"/><path d="M276 40Q250 20 210 26Q170 32 150 20" fill="none" stroke="#f3b94f" stroke-dasharray="3 6" stroke-width="2"/><path d="M0 200V90L50 60L100 80L160 50L230 90L270 120L320 110V200Z" fill="#6a5644"/><path d="M0 200V120L60 100L120 115L200 100L270 140L320 135V200Z" fill="#7d6750"/><path d="M118 186V146Q118 116 150 116Q182 116 182 146V186Z" fill="#17120d"/><g fill="#d8a46a"><ellipse cx="166" cy="180" rx="22" ry="8"/><circle cx="192" cy="174" r="8"/><path d="M186 166l3-8 4 7Z" fill="#a8743f"/><path d="M194 166l4-7 2 8Z" fill="#a8743f"/><ellipse cx="208" cy="182" rx="10" ry="3"/><ellipse cx="206" cy="187" rx="10" ry="3"/><path d="M144 178q-12-8-8-18" stroke="#d8a46a" stroke-width="4" fill="none" stroke-linecap="round"/></g><circle cx="195" cy="172" r="1.4" fill="#17120d"/><rect y="186" width="320" height="14" fill="#5a4636"/>`,
+ expl:'<b>مسار الشمس المنقّط</b> يميل عن الكهف عند الطلوع والغروب فلا تصيبهم، و<b>فتحة الكهف المظلمة</b> مأواهم، و<b>الكلب الباسط ذراعيه</b> على العتبة؛ وفسّر الطبري «الوصيد» بفناء الكهف وعتبته.',
+ q:'«وزدناهم هدى» ـ ما الملاذ الذي تأوي إليه لتحفظ إيمانك؟'},
+{id:'fil',s:105,title:'أصحاب الفيل',ayah:'وأرسل عليهم طيرا أبابيل ترميهم بحجارة من سجيل',ref:'الفيل: 3–4',
+ svg:`<rect width="320" height="200" fill="#26324f"/><rect y="168" width="320" height="32" fill="#c9a96b"/><g transform="translate(196 104)"><path d="M0 18L24 4L74 4L50 18Z" fill="#333"/><rect y="18" width="50" height="50" fill="#141414"/><path d="M50 18L74 4V54L50 68Z" fill="#262626"/><rect y="28" width="50" height="6" fill="#d4a93a"/><path d="M50 28L74 14V20L50 34Z" fill="#b38c2a"/></g><g fill="#8d93a3"><ellipse cx="74" cy="138" rx="38" ry="24"/><rect x="46" y="150" width="11" height="22"/><rect x="62" y="152" width="11" height="20"/><rect x="84" y="152" width="11" height="20"/><rect x="98" y="150" width="11" height="22"/><circle cx="114" cy="124" r="18"/><path d="M128 128Q140 146 132 164" stroke="#8d93a3" stroke-width="8" fill="none" stroke-linecap="round"/></g><ellipse cx="104" cy="124" rx="10" ry="14" fill="#757b8b"/><circle cx="120" cy="118" r="2.2" fill="#1a1a1a"/><path d="M126 136q10 4 12 -2" stroke="#f2efe6" stroke-width="3" fill="none" stroke-linecap="round"/><g stroke="#f3e2b8" stroke-width="3" fill="none" stroke-linecap="round">${[[60,40],[100,26],[140,46],[40,70],[170,24],[120,72]].map(([x,y])=>`<path d="M${x-9} ${y-4}Q${x-4} ${y+3} ${x} ${y}Q${x+4} ${y+3} ${x+9} ${y-4}"/>`).join('')}</g><g fill="#d06a3b">${[[60,52],[100,38],[140,58],[40,82],[120,84]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3"/>`).join('')}</g><g stroke="#d06a3b" stroke-dasharray="2 4" stroke-width="1.5"><path d="M60 56L70 110M100 42L92 100M120 88L110 104"/></g>`,
+ expl:'<b>الكعبة</b> بحزامها الذهبي هي البيت المقصود، و<b>الفيل</b> جيش أبرهة القادم من اليمن، و<b>الطيور الأبابيل</b> جماعات متتابعة تحمل <b>حصى</b> من سجيل؛ ونقل الطبري أن «سجيل» فارسي معرّب يعني الحجر والطين.',
+ q:'«لإيلاف قريش» ـ ما النعمة التي حُفظت لك دون أن ترى كيف؟'},
+{id:'naml',s:27,title:'وادي النمل',ayah:'قالت نملة يا أيها النمل ادخلوا مساكنكم لا يحطمنكم سليمان وجنوده وهم لا يشعرون',ref:'النمل: 18',
+ svg:`<rect width="320" height="200" fill="#223650"/><path d="M0 110Q80 80 160 100T320 96V200H0Z" fill="#3d5a3a"/><path d="M0 140Q90 120 180 136T320 130V200H0Z" fill="#c2a46e"/><path d="M220 160Q250 112 290 160Z" fill="#8b6a40"/><ellipse cx="255" cy="156" rx="9" ry="6" fill="#2a1f12"/>${[[40,170],[70,166],[100,170],[130,166],[160,168],[190,164],[222,160]].map(([x,y],i)=>`<g fill="#2a1a12"><circle cx="${x}" cy="${y}" r="3"/><circle cx="${x+6}" cy="${y}" r="2.5"/><circle cx="${x+12}" cy="${y-1}" r="3.6"/><path d="M${x+2} ${y}l-3 5M${x+6} ${y}l0 6M${x+10} ${y}l3 5" stroke="#2a1a12" stroke-width="1.2"/></g>`).join('')}<ellipse cx="120" cy="134" rx="14" ry="6" fill="#9c8462"/><g fill="#3a2418"><circle cx="112" cy="122" r="4"/><circle cx="120" cy="120" r="3.4"/><circle cx="129" cy="117" r="5"/><path d="M131 113l4-7M127 112l1-8" stroke="#3a2418" stroke-width="1.4"/></g><g stroke="#f3cf6e" stroke-width="2" fill="none" stroke-linecap="round"><path d="M140 108q6 6 0 12M146 102q10 10 0 22"/></g>`,
+ expl:'<b>النملة القائمة على الحجر</b> تنادي قومها وتنذرهم، و<b>القوافل الصغيرة</b> النمل يدخل <b>مساكنه</b> في التلّ. لاحظ أنها التمست العذر: «وهم لا يشعرون»، فتبسّم سليمان ضاحكاً من قولها وشكر الله.',
+ q:'هل تحسن الظن بغيرك كما أحسنت النملة الظن بجيش لا يراها؟'},
+{id:'naqa',s:91,title:'ناقة صالح',ayah:'فقال لهم رسول الله ناقة الله وسقياها',ref:'الشمس: 13',
+ svg:`<rect width="320" height="200" fill="#2c2440"/><rect y="168" width="320" height="32" fill="#c99a62"/><g fill="#b4784a"><path d="M0 168V70H78V168Z"/><path d="M234 168V60H320V168Z"/></g><g fill="#9a6440"><path d="M14 86h50v8h-50zM20 78h38v8h-38z"/><rect x="26" y="112" width="26" height="40"/><path d="M248 76h60v8h-60zM256 68h44v8h-44z"/><rect x="264" y="104" width="28" height="44"/></g><g fill="#5c3a24"><rect x="31" y="120" width="16" height="32"/><rect x="270" y="112" width="16" height="36"/></g><rect x="96" y="150" width="40" height="18" rx="3" fill="#7a5230"/><rect x="99" y="152" width="34" height="8" fill="#4aa3d9"/><g fill="#e3c08e"><ellipse cx="180" cy="130" rx="36" ry="18"/><ellipse cx="174" cy="112" rx="16" ry="13"/><path d="M210 124Q224 110 222 88" stroke="#e3c08e" stroke-width="10" fill="none" stroke-linecap="round"/><ellipse cx="226" cy="84" rx="11" ry="7"/></g><g stroke="#e3c08e" stroke-width="6" stroke-linecap="round"><path d="M160 144L158 170M172 146L174 170M196 144L194 170M206 142L210 170"/></g><circle cx="230" cy="82" r="1.6" fill="#2c2440"/><path d="M144 128q-8 6-6 16" stroke="#e3c08e" stroke-width="3" fill="none"/>`,
+ expl:'<b>الواجهات المنحوتة</b> بيوت ثمود في الصخر بالحِجر، و<b>الناقة</b> آيةٌ أُرسلت إليهم، و<b>حوض الماء</b> قسمة السقيا: «لها شِرب ولكم شِرب يوم معلوم». فلما عقروها حلّ بهم العذاب.',
+ q:'ما «الناقة» في حياتك: الأمانة التي اختُبرت بها، وهل أعطيتها حقّها؟'}
+];
+const STORY_PLACE={nuh:'judi',yusuf:'misr',musa:'misr',ibrahim:'babil',yunus:'nineveh',fil:'makkah',naqa:'hijr'};
+STORIES.forEach(s=>{if(STORY_PLACE[s.id])s.place=STORY_PLACE[s.id];});
+STORIES.find(s=>s.id==='yunus').also=[37,10];
+STORIES.find(s=>s.id==='nuh').also=[71];
+STORIES.find(s=>s.id==='naqa').also=[7,11,26];
+STORIES.find(s=>s.id==='ibrahim').also=[];
+STORIES.push(
+{id:'ad',s:69,also:[46,89,11,7],place:'ahqaf',title:'عاد والريح الصرصر',ayah:'وأما عاد فأهلكوا بريح صرصر عاتية',ref:'الحاقة: 6',
+ svg:`<rect width="320" height="200" fill="#3a2a2a"/><circle cx="270" cy="40" r="16" fill="#e0a060" opacity=".5"/><path d="M0 150Q60 120 130 140T260 132T320 140V200H0Z" fill="#b8874f"/><path d="M0 170Q80 150 170 166T320 160V200H0Z" fill="#9c6e3d"/><g fill="#7a6a5a"><rect x="214" y="66" width="13" height="86"/><rect x="242" y="80" width="13" height="72"/><rect x="270" y="58" width="13" height="94"/><rect x="208" y="60" width="25" height="8"/><rect x="236" y="74" width="25" height="8"/><rect x="264" y="52" width="25" height="8"/></g><g fill="none" stroke="#f0d6a8" stroke-width="2.4" stroke-linecap="round" opacity=".8"><path d="M10 60q30-20 60 0t60 0q-20 14-40 4"/><path d="M30 95q40-22 80 0t70 -4q-26 18-48 6"/><path d="M60 40q26-12 52 0"/></g><g fill="#5a3e24"><rect x="40" y="168" width="58" height="11" rx="5" transform="rotate(-8 69 173)"/><rect x="112" y="174" width="62" height="11" rx="5" transform="rotate(6 143 179)"/></g><g fill="#2a1a10"><ellipse cx="41" cy="177" rx="3" ry="5.5" transform="rotate(-8 41 177)"/><ellipse cx="173" cy="183" rx="3" ry="5.5" transform="rotate(6 173 183)"/></g>`,
+ expl:'<b>الأعمدة الطويلة</b> «إرم ذات العماد» التي لم يُخلق مثلها في البلاد. و<b>الخطوط الملتفّة</b> الريح الصرصر: الشديدة البرد والصوت، سُخّرت عليهم سبع ليال وثمانية أيام. و<b>الجذوع الملقاة</b> تشبيه القرآن لهم: «كأنهم أعجاز نخل خاوية». و<b>الكثبان</b> هي الأحقاف، ديارهم في جنوب الجزيرة.',
+ q:'«فهل ترى لهم من باقية» — ما الذي يبقى من الإنسان بعد قوته وبنيانه؟'},
+{id:'hudhud',s:27,place:'saba',title:'الهدهد ونبأ سبأ',ayah:'فمكث غير بعيد فقال أحطت بما لم تحط به وجئتك من سبإ بنبإ يقين',ref:'النمل: 22',
+ svg:`<rect width="320" height="200" fill="#25365a"/><circle cx="250" cy="44" r="22" fill="#f3b94f"/><g stroke="#f3b94f" stroke-width="2" opacity=".6"><path d="M250 12v-8M282 44h8M250 76v8M218 44h-8M273 21l6-6M273 67l6 6M227 21l-6-6"/></g><rect y="160" width="320" height="40" fill="#5c4a33"/><g transform="translate(190 92)"><rect x="0" y="40" width="90" height="12" fill="#c9952f"/><rect x="10" y="0" width="70" height="44" rx="6" fill="#d9a93a"/><rect x="18" y="8" width="54" height="30" rx="4" fill="#7a2e3a"/><rect x="4" y="52" width="8" height="18" fill="#a87a22"/><rect x="78" y="52" width="8" height="18" fill="#a87a22"/><circle cx="45" cy="-4" r="6" fill="#f3cf6e"/></g><g transform="translate(70 118)"><path d="M-6 -18l-8 -16 6 2 2-10 6 8 4-12 4 10 6-6-2 12" fill="#e08a3c" stroke="#1c1c1c" stroke-width="1"/><ellipse cx="0" cy="8" rx="30" ry="16" fill="#d7955a"/><path d="M-22 4q20-8 40 10q-20 6-40 0Z" fill="#1c1c1c"/><path d="M-18 6l6 8M-10 4l6 10M-2 6l6 8M6 8l5 7" stroke="#f2efe6" stroke-width="2.5"/><circle cx="18" cy="-10" r="11" fill="#d7955a"/><circle cx="22" cy="-12" r="2" fill="#1c1c1c"/><path d="M28 -9l26 6-26 0Z" fill="#2a2a2a"/><path d="M-6 22l-4 20M6 22l4 20" stroke="#5a3e24" stroke-width="3"/></g>`,
+ expl:'<b>الهدهد بتاجه</b> الطائر الذي تفقّده سليمان فغاب ثم جاء بالخبر. و<b>العرش الذهبي</b> «ولها عرش عظيم» لملكة سبأ. و<b>الشمس</b> حال قومها: «وجدتها وقومها يسجدون للشمس من دون الله». وكانت سبأ بأرض اليمن، وعاصمتها مأرب.',
+ q:'طائر صغير جاء بعلمٍ لم يحط به الملك؛ ممّن تتعلم وإن كان أصغر منك؟'},
+{id:'arim',s:34,place:'saba',title:'سيل العرم',ayah:'فأعرضوا فأرسلنا عليهم سيل العرم وبدلناهم بجنتيهم جنتين ذواتي أكل خمط وأثل وشيء من سدر قليل',ref:'سبأ: 16',
+ svg:`<rect width="320" height="200" fill="#1e2c48"/><path d="M0 90L60 40L120 90Z" fill="#5c4a3a"/><path d="M200 90L260 40L320 90Z" fill="#5c4a3a"/><path d="M110 90V60H140L150 90Z" fill="#8b7a5c"/><path d="M170 90L180 60H210V90Z" fill="#8b7a5c"/><path d="M145 60L160 75L175 60" fill="none" stroke="#3a2f22" stroke-width="3"/><path d="M140 70Q160 90 155 120Q150 150 165 200H120Q130 150 135 110Z" fill="#3f8fd6" opacity=".9"/><path d="M150 80q8 30 0 60" stroke="#cfe6ff" stroke-width="2" fill="none"/><rect y="150" width="320" height="50" fill="#4a3a28"/><g fill="#4cc79f"><circle cx="30" cy="140" r="14"/><circle cx="60" cy="134" r="16"/><circle cx="90" cy="142" r="13"/></g><g stroke="#5a3e24" stroke-width="4"><path d="M30 150v14M60 148v16M90 152v12"/></g><g stroke="#8a7a5c" stroke-width="2" fill="none"><path d="M230 164l6-22 4 10 6-14 3 16 5-8 2 18"/><path d="M270 166l4-18 5 8 4-12 4 22"/></g><circle cx="300" cy="150" r="5" fill="#7a8a5a"/>`,
+ expl:'<b>السدّ المكسور</b> سدّ مأرب «العَرِم»، و<b>الماء المتدفق</b> هو السيل الذي أغرق ما حوله. و<b>الأشجار الخضراء</b> «جنتان عن يمين وشمال» كانتا قبل، و<b>الأشجار الشائكة</b> ما بُدّلوا به: الخمط والأثل وقليل من السدر.',
+ q:'«ذلك جزيناهم بما كفروا» — كيف تتحول النعمة إذا لم تُشكر؟'},
+{id:'qarun',s:28,place:'misr',title:'خسف قارون',ayah:'فخسفنا به وبداره الأرض فما كان له من فئة ينصرونه من دون الله',ref:'القصص: 81',
+ svg:`<rect width="320" height="200" fill="#231d36"/><rect y="120" width="320" height="80" fill="#6b5536"/><g transform="translate(100 70) rotate(-8)"><rect x="0" y="20" width="120" height="60" fill="#c9a96b"/><path d="M-6 20h132l-10-14H4Z" fill="#a87a3c"/><path d="M40 6q20-34 40 0Z" fill="#d9b26b"/><rect x="50" y="46" width="20" height="34" fill="#4a3220"/><rect x="14" y="36" width="14" height="16" fill="#4a3220"/><rect x="92" y="36" width="14" height="16" fill="#4a3220"/></g><path d="M60 128L110 150L150 138L200 156L250 140L290 128L270 200H80Z" fill="#17120d"/><path d="M110 150l-6 22M200 156l6 26M150 138l2 30" stroke="#3a2a18" stroke-width="3"/><g fill="#f3cf6e"><circle cx="40" cy="160" r="5"/><circle cx="52" cy="168" r="4"/><circle cx="292" cy="170" r="5"/></g><g stroke="#d9a93a" stroke-width="3" fill="none"><circle cx="30" cy="186" r="5"/><path d="M35 186h14v5"/><circle cx="276" cy="186" r="5"/><path d="M281 186h12v5"/></g>`,
+ expl:'<b>القصر المائل</b> دار قارون تغور في الأرض. و<b>الشقّ الأسود</b> الخسف الذي ابتلعه وداره. و<b>المفاتيح والذهب</b> كنوزه التي «إن مفاتحه لتنوء بالعصبة أولي القوة». وكان من قوم موسى، فبغى عليهم بماله.',
+ q:'قال «إنما أوتيته على علم عندي» — هل تنسب نِعمك إلى نفسك؟'},
+{id:'khidr',s:18,title:'موسى والخضر',ayah:'أما السفينة فكانت لمساكين يعملون في البحر فأردت أن أعيبها وكان وراءهم ملك يأخذ كل سفينة غصبا',ref:'الكهف: 79',
+ svg:`<rect width="320" height="200" fill="#1f3050"/><rect y="120" width="170" height="80" fill="#1f5590"/><path d="M0 120q20-6 40 0t40 0t40 0t50 0" stroke="#7fb3e6" stroke-width="2" fill="none"/><path d="M30 112h110l-14 22H44Z" fill="#8b5a2b"/><path d="M85 112V60" stroke="#6e4522" stroke-width="4"/><path d="M87 62L120 100H87Z" fill="#e9e3c9"/><circle cx="66" cy="124" r="5" fill="#17120d"/><path d="M61 124l-6 4M71 124l6 3" stroke="#17120d" stroke-width="1.5"/><rect x="170" y="150" width="150" height="50" fill="#6a5644"/><g transform="translate(200 70)"><g fill="#a08060" stroke="#6a5644" stroke-width="1.5"><rect x="0" y="0" width="30" height="16"/><rect x="30" y="0" width="30" height="16"/><rect x="60" y="0" width="30" height="16"/><rect x="15" y="16" width="30" height="16"/><rect x="45" y="16" width="30" height="16"/><rect x="0" y="32" width="30" height="16"/><rect x="30" y="32" width="30" height="16"/><rect x="60" y="32" width="30" height="16"/><rect x="15" y="48" width="30" height="16"/><rect x="45" y="48" width="30" height="16"/><rect x="0" y="64" width="90" height="16"/></g></g><rect x="226" y="164" width="38" height="24" rx="3" fill="#a8743f"/><rect x="226" y="164" width="38" height="8" fill="#c9952f"/><circle cx="245" cy="176" r="12" fill="#f3cf6e" opacity=".35"/>`,
+ expl:'<b>السفينة المثقوبة</b> عيبٌ ظاهر حفظها من ملك يأخذ كل سفينة صالحة غصباً. و<b>الجدار المقام</b> أقامه الخضر بلا أجر، لأن تحته <b>كنزاً</b> ليتيمين حتى يبلغا أشدهما «وكان أبوهما صالحاً». ظاهر الأمر ضرر، وباطنه رحمة.',
+ q:'كم من «خرقٍ» في حياتك كان حفظاً لم تفهمه وقتها؟'},
+{id:'dhulqarnayn',s:18,title:'سدّ ذي القرنين',ayah:'آتوني زبر الحديد حتى إذا ساوى بين الصدفين قال انفخوا حتى إذا جعله نارا قال آتوني أفرغ عليه قطرا',ref:'الكهف: 96',
+ svg:`<rect width="320" height="200" fill="#1c2238"/><path d="M0 200L0 40L60 10L110 70L120 200Z" fill="#4a4258"/><path d="M320 200L320 30L260 14L210 70L200 200Z" fill="#4a4258"/><path d="M30 60L60 10L80 40Z" fill="#6a6278"/><path d="M290 50L260 14L240 40Z" fill="#6a6278"/><g fill="#7d8494" stroke="#4f5566" stroke-width="1.5">${[0,1,2,3,4,5].map(r=>[0,1,2,3].map(c=>`<rect x="${112+c*24}" y="${180-r*22}" width="24" height="20"/>`).join('')).join('')}</g><rect x="112" y="48" width="96" height="16" fill="#e8742c"/><path d="M112 48q12-10 24 0t24 0t24 0t24 0" fill="#ffb24d"/><g fill="#ffb24d" opacity=".7"><rect x="132" y="64" width="4" height="40"/><rect x="170" y="64" width="4" height="60"/><rect x="196" y="64" width="4" height="30"/></g><circle cx="160" cy="56" r="40" fill="#ff9a3c" opacity=".12"/>`,
+ expl:'<b>الجبلان</b> هما «الصدفان». و<b>الكتل الرمادية</b> زُبَر الحديد التي سوّى بها بينهما. و<b>اللون المتوهّج</b> النحاس المذاب «القِطر» الذي أُفرغ على الحديد المحمّى، فصار سدّاً لا يُستطاع نقبه ولا الظهور عليه.',
+ q:'قال بعد الإنجاز «هذا رحمة من ربي» — هل تنسب نجاحك إلى الله كما فعل؟'},
+{id:'maryam',s:19,place:'bethlehem',title:'مريم والنخلة',ayah:'وهزي إليك بجذع النخلة تساقط عليك رطبا جنيا',ref:'مريم: 25',
+ svg:`<rect width="320" height="200" fill="#2a2846"/><circle cx="60" cy="40" r="14" fill="#f6e7b8" opacity=".85"/><rect y="160" width="320" height="40" fill="#8a7050"/><path d="M180 196Q176 120 190 50" stroke="#7a5230" stroke-width="12" fill="none" stroke-linecap="round"/><g stroke="#6a4626" stroke-width="2"><path d="M178 170h10M178 150h10M180 130h10M182 110h10M184 90h10M186 70h10"/></g><g fill="#4cc79f"><path d="M190 50Q150 30 120 60Q160 44 190 56Z"/><path d="M190 50Q230 28 262 56Q224 44 190 56Z"/><path d="M190 50Q170 10 140 18Q174 24 188 52Z"/><path d="M190 50Q212 8 244 20Q208 26 192 52Z"/><path d="M190 52Q186 80 160 96Q186 74 192 54Z"/><path d="M190 52Q200 80 226 94Q198 74 190 54Z"/></g><g fill="#d6802e"><circle cx="182" cy="62" r="4"/><circle cx="188" cy="66" r="4"/><circle cx="196" cy="62" r="4"/><circle cx="192" cy="70" r="4"/></g><g fill="#d6802e"><ellipse cx="160" cy="110" rx="3" ry="4"/><ellipse cx="214" cy="126" rx="3" ry="4"/><ellipse cx="170" cy="148" rx="3" ry="4"/><ellipse cx="206" cy="160" rx="3" ry="4"/></g><path d="M0 182Q60 172 120 184T240 180T320 186V194H0Z" fill="#3f8fd6"/><path d="M20 186q20-4 40 0M150 188q20-4 40 0" stroke="#cfe6ff" stroke-width="1.5" fill="none"/>`,
+ expl:'<b>النخلة</b> جذعٌ أُمرت مريم بهزّه وهي في ضعفها، و<b>الرطب المتساقط</b> رزق جنيّ. و<b>الجدول</b> «قد جعل ربك تحتك سريّاً»، وفسّر الطبري السريّ بالنهر الصغير. و<b>القمر</b> وحدتها في «مكان قصيّ» بعيداً عن قومها.',
+ q:'أُمرت بالهزّ مع ضعفها والرزق من الله — ما «الهزّة» المطلوبة منك؟'},
+{id:'kaaba',s:2,also:[14,22],place:'makkah',title:'رفع قواعد البيت',ayah:'وإذ يرفع إبراهيم القواعد من البيت وإسماعيل ربنا تقبل منا إنك أنت السميع العليم',ref:'البقرة: 127',
+ svg:`<rect width="320" height="200" fill="#2a3352"/><path d="M0 130L50 70L100 120L150 80L200 125L260 60L320 120V200H0Z" fill="#5a4636"/><rect y="150" width="320" height="50" fill="#b89768"/><g fill="#6b6b6b" stroke="#3a3a3a" stroke-width="1.5"><rect x="110" y="134" width="30" height="16"/><rect x="140" y="134" width="30" height="16"/><rect x="170" y="134" width="30" height="16"/><rect x="125" y="118" width="30" height="16"/><rect x="155" y="118" width="30" height="16"/><rect x="140" y="102" width="30" height="16"/><rect x="200" y="134" width="20" height="16"/></g><g fill="#7a7a7a" stroke="#3a3a3a"><rect x="236" y="160" width="20" height="12"/><rect x="250" y="168" width="18" height="12"/><rect x="232" y="174" width="22" height="12"/></g><rect x="70" y="150" width="26" height="18" rx="3" fill="#cfc2a0"/><g fill="#8a7a5c"><ellipse cx="79" cy="156" rx="3.5" ry="5"/><ellipse cx="88" cy="156" rx="3.5" ry="5"/></g><g fill="#f3cf6e" opacity=".8"><circle cx="40" cy="30" r="1.8"/><circle cx="120" cy="20" r="1.5"/><circle cx="280" cy="26" r="1.8"/><circle cx="210" cy="40" r="1.3"/></g>`,
+ expl:'<b>الجدران الناقصة</b> البيت وهو يُرفع على قواعده. و<b>الحجارة المكدّسة</b> ما كان إسماعيل يناوله أباه. و<b>الحجر الصغير ذو الأثرين</b> مقام إبراهيم الذي قام عليه حين ارتفع البناء. و<b>الجبال الجرداء</b> «وادٍ غير ذي زرع» كما في دعاء إبراهيم.',
+ q:'أتمّا البناء ثم قالا «ربنا تقبّل منا» — هل تسأل القبول بعد العمل؟'},
+{id:'birds',s:2,title:'طيور إبراهيم الأربعة',ayah:'ثم اجعل على كل جبل منهن جزءا ثم ادعهن يأتينك سعيا',ref:'البقرة: 260',
+ svg:`<rect width="320" height="200" fill="#1d2a48"/><circle cx="160" cy="104" r="34" fill="#f3cf6e" opacity=".14"/><circle cx="160" cy="104" r="12" fill="#f3cf6e" opacity=".5"/><g fill="#5a4a5e"><path d="M0 70L40 30L80 70Z"/><path d="M240 70L280 26L320 70Z"/><path d="M0 200L40 150L90 200Z"/><path d="M230 200L280 146L320 200Z"/></g>${[[40,30,1,1],[280,26,-1,1],[40,150,1,-1],[280,146,-1,-1]].map(([x,y,dx,dy],i)=>`<path d="M${x} ${y}Q${(x+160)/2} ${(y+104)/2-20*dy} 160 104" stroke="#f3cf6e" stroke-opacity=".35" stroke-dasharray="3 5" fill="none"/><g transform="translate(${x+(160-x)*.45} ${y+(104-y)*.45})"><path d="M-10 0Q-4-8 0 0Q4-8 10 0" stroke="${['#ff7aa8','#6fc3ff','#9be15d','#f5b041'][i]}" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle r="2.6" fill="${['#ff7aa8','#6fc3ff','#9be15d','#f5b041'][i]}"/></g>`).join('')}`,
+ expl:'<b>الجبال الأربعة</b> وُزّعت عليها أجزاء الطيور الأربعة. و<b>الخطوط المنقّطة</b> طريق الطيور وهي تأتي «سعياً» حين دُعيت. و<b>النور في الوسط</b> طمأنينة القلب التي سألها إبراهيم: «بلى ولكن ليطمئن قلبي».',
+ q:'اليقين درجات — ما الذي يزيد طمأنينة قلبك؟'},
+{id:'village',s:2,place:'aqsa',title:'الذي مرّ على قرية',ayah:'أو كالذي مر على قرية وهي خاوية على عروشها قال أنى يحيي هذه الله بعد موتها',ref:'البقرة: 259',
+ svg:`<rect width="320" height="200" fill="#2b2a40"/><rect y="150" width="320" height="50" fill="#7a6648"/><g fill="#9a8a6c" stroke="#5a4a36" stroke-width="1.5"><path d="M20 150V100H60V120H70V150Z"/><path d="M80 150V90L100 76L120 90V112L110 150Z"/><path d="M230 150V110H270V96H290V150Z"/></g><g fill="#2b2a40"><rect x="34" y="112" width="10" height="14"/><rect x="94" y="100" width="10" height="14"/><rect x="246" y="120" width="10" height="14"/></g><path d="M64 120l10-6M118 92l12 8" stroke="#5a4a36" stroke-width="3"/><g transform="translate(170 140)"><ellipse cx="0" cy="0" rx="24" ry="12" fill="#8d8478"/><rect x="-18" y="6" width="5" height="18" fill="#8d8478"/><rect x="-6" y="7" width="5" height="17" fill="#8d8478"/><rect x="8" y="7" width="5" height="17" fill="#8d8478"/><rect x="16" y="6" width="5" height="18" fill="#8d8478"/><path d="M20 -4L34 -20" stroke="#8d8478" stroke-width="9" stroke-linecap="round"/><ellipse cx="38" cy="-22" rx="9" ry="6" fill="#8d8478"/><path d="M34 -28l-2-10 5 8M40 -28l2-10 2 9" stroke="#8d8478" stroke-width="3"/></g><g transform="translate(120 160)"><path d="M0 0h30l-4 14H4Z" fill="#a8743f"/><circle cx="8" cy="-2" r="4" fill="#7a3e6a"/><circle cx="16" cy="-3" r="4" fill="#7a3e6a"/><circle cx="23" cy="-1" r="4" fill="#7a3e6a"/></g><path d="M210 156q-2-12 6-16h8q8 4 6 16Z" fill="#6aa6e6"/><circle cx="270" cy="34" r="12" fill="#e9e3c9"/><circle cx="276" cy="30" r="10" fill="#2b2a40"/>`,
+ expl:'<b>البيوت المتهدّمة</b> قرية «خاوية على عروشها»، ونقل الطبري أنها بيت المقدس بعد خرابها. و<b>الحمار</b> آيةُ جمع العظام وكسوتها لحماً أمام عينيه. و<b>السلة والإناء</b> طعامه وشرابه لم يتغيّرا مئة عام «لم يتسنّه».',
+ q:'«أنى يحيي هذه الله بعد موتها» — ما الذي ظننته ميتاً في حياتك ثم أحياه الله؟'},
+{id:'sabbath',s:7,place:'ayla',title:'أصحاب السبت',ayah:'إذ تأتيهم حيتانهم يوم سبتهم شرعا ويوم لا يسبتون لا تأتيهم',ref:'الأعراف: 163',
+ svg:`<rect width="320" height="200" fill="#1f2c4a"/><rect y="90" width="230" height="110" fill="#1f5590"/><path d="M230 90L240 200H320V90Z" fill="#8a7050"/><g fill="#c9a96b" stroke="#6a5644"><rect x="252" y="56" width="26" height="34"/><rect x="282" y="66" width="24" height="24"/><path d="M250 56l15-12 15 12Z"/></g>${[[40,100],[80,96],[120,102],[160,98],[200,100],[60,130],[140,134],[100,160],[180,150]].map(([x,y],i)=>`<g transform="translate(${x} ${y})"><path d="M-12 0Q0 -9 12 0Q0 9 -12 0Z" fill="${i<5?'#9fd3ff':'#7fb3e6'}"/><path d="M12 0l7-6v12Z" fill="${i<5?'#9fd3ff':'#7fb3e6'}"/><circle cx="-6" cy="-1.5" r="1.5" fill="#0e1322"/></g>`).join('')}<path d="M232 120h-30v30h30" stroke="#5a4636" stroke-width="3" fill="none"/><g stroke="#e9e3c9" stroke-width="1" opacity=".5"><path d="M196 124l6 6M196 136l6 6M202 124l-6 6"/></g>`,
+ expl:'<b>الحيتان الظاهرة</b> تأتي يوم السبت «شُرّعاً» ظاهرةً على وجه الماء، وتغيب سائر الأيام. و<b>الحوض المسدود</b> عند الشاطئ حيلتهم ليحبسوها يوم السبت ويأخذوها بعده. و<b>القرية</b> «حاضرة البحر»، ونقل الطبري أنها أيلة.',
+ q:'الحيلة على الحرام بالألفاظ والوسائل — هل نقع فيها دون أن نشعر؟'},
+{id:'lut',s:11,also:[15,26,54],place:'lut',title:'قرى قوم لوط',ayah:'فلما جاء أمرنا جعلنا عاليها سافلها وأمطرنا عليها حجارة من سجيل منضود',ref:'هود: 82',
+ svg:`<rect width="320" height="200" fill="#2a1f2e"/><path d="M0 40Q160 0 320 40V0H0Z" fill="#3a2a3a"/><rect y="150" width="320" height="50" fill="#5a4636"/><path d="M60 160Q160 146 260 160Q160 176 60 160Z" fill="#2c4f6e"/><g transform="translate(160 110) rotate(180)"><g fill="#8a7a6a" stroke="#4a3a2e"><rect x="-60" y="-10" width="30" height="30"/><rect x="-26" y="-24" width="28" height="44"/><rect x="6" y="-6" width="26" height="26"/><path d="M-60 -10l15-14 15 14Z"/><path d="M6 -6l13-12 13 12Z"/></g></g><g fill="#d06a3b">${[[30,30],[80,50],[130,20],[200,44],[260,24],[290,60],[50,80],[240,86]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5"/><path d="M${x} ${y-4}l-3 -12" stroke="#d06a3b" stroke-width="1.2" stroke-dasharray="2 3"/>`).join('')}</g>`,
+ expl:'<b>البيوت المقلوبة</b> «جعلنا عاليها سافلها». و<b>الحصى المتساقط</b> حجارة من سجيل منضود متتابع. و<b>الماء الداكن</b> البحر الميت، حيث يرى كثيرون أن ديارهم كانت.',
+ q:'«أليس الصبح بقريب» — حين يطول الظلم، هل تتذكر أن الفجر قريب؟'},
+{id:'tur',s:20,also:[28,79,19],place:'tur',title:'النار في الوادي المقدس',ayah:'إني أنا ربك فاخلع نعليك إنك بالواد المقدس طوى',ref:'طه: 12',
+ svg:`<rect width="320" height="200" fill="#151a33"/><g fill="#cfd8ff">${[[20,20],[60,40],[100,16],[250,30],[290,50],[200,14]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4"/>`).join('')}</g><path d="M0 200L80 120L140 60L200 110L320 80V200Z" fill="#4a3f52"/><path d="M110 90L140 60L170 86Z" fill="#5d5068"/><rect y="170" width="320" height="30" fill="#3a3040"/><g transform="translate(176 100)"><circle r="22" fill="#ff9a3c" opacity=".18"/><path d="M0 8Q-10 -4 -2 -16Q0 -6 4 -12Q10 -2 0 8Z" fill="#ffb24d"/><path d="M0 8Q-4 0 0 -6Q4 0 0 8Z" fill="#fff1b8"/><path d="M-10 8h20" stroke="#4cc79f" stroke-width="3"/></g><path d="M40 196Q120 176 180 186T300 176" stroke="#5a4e5e" stroke-width="10" fill="none"/><g fill="#8b5a2b"><ellipse cx="140" cy="188" rx="9" ry="4"/><ellipse cx="160" cy="190" rx="9" ry="4"/></g>`,
+ expl:'<b>النار على سفح الجبل</b> «إني آنستُ ناراً» رآها موسى من جانب الطور فقصدها. و<b>الشجيرة الخضراء</b> موضع النداء. و<b>النعلان</b> أمرُ «فاخلع نعليك» تعظيماً للوادي المقدس طُوى.',
+ q:'ذهب يطلب جذوة نار فوجد النداء — ما الذي تطلبه فيأتيك أعظم منه؟'},
+{id:'madyan',s:28,place:'madyan',title:'عند ماء مدين',ayah:'فسقى لهما ثم تولى إلى الظل فقال رب إني لما أنزلت إلي من خير فقير',ref:'القصص: 24',
+ svg:`<rect width="320" height="200" fill="#2b3554"/><circle cx="270" cy="40" r="20" fill="#f3b94f" opacity=".85"/><rect y="140" width="320" height="60" fill="#a88a5c"/><g transform="translate(60 130)"><ellipse cx="0" cy="0" rx="26" ry="8" fill="#2a2016"/><rect x="-26" y="0" width="52" height="22" fill="#8b7a5c"/><path d="M-26 8h52M-26 15h52" stroke="#6b5c43"/></g><rect x="96" y="146" width="44" height="10" rx="3" fill="#6b4a2a"/><rect x="99" y="147" width="38" height="5" fill="#4aa3d9"/>${[[150,160],[176,170],[204,162],[128,176]].map(([x,y])=>`<g transform="translate(${x} ${y})"><ellipse rx="14" ry="9" fill="#f2efe6"/><circle cx="13" cy="-4" r="5" fill="#3a3a3a"/><path d="M-8 7v8M8 7v8" stroke="#3a3a3a" stroke-width="2.5"/></g>`).join('')}<path d="M262 160V96" stroke="#6b4a2a" stroke-width="7"/><ellipse cx="262" cy="90" rx="40" ry="24" fill="#3f8f6a"/><ellipse cx="262" cy="160" rx="40" ry="6" fill="#0e1322" opacity=".3"/>`,
+ expl:'<b>البئر والحوض</b> ماء مدين حيث وجد الناس يسقون. و<b>الغنم</b> غنم الفتاتين اللتين سقى لهما موسى وهو غريب جائع. و<b>الشجرة وظلّها</b> «ثم تولّى إلى الظل» فدعا بهذا الدعاء، فجاءه الفرج من حيث لا يحتسب.',
+ q:'دعا بحاجته بعد معروفٍ صنعه — هل تجعل حاجتك إلى الله بعد عملٍ صالح؟'},
+{id:'jannah',s:68,place:'darawan',title:'أصحاب الجنة',ayah:'فطاف عليها طائف من ربك وهم نائمون فأصبحت كالصريم',ref:'القلم: 19–20',
+ svg:`<rect width="320" height="200" fill="#161c33"/><circle cx="160" cy="34" r="14" fill="#e9e3c9"/><circle cx="166" cy="30" r="12" fill="#161c33"/><rect y="150" width="320" height="50" fill="#4a3a28"/><path d="M160 150V200" stroke="#0e1322" stroke-width="2" stroke-dasharray="4 4"/>${[30,80,130].map(x=>`<g transform="translate(${x} 0)"><path d="M0 150V112" stroke="#5a3e24" stroke-width="5"/><circle cx="0" cy="100" r="20" fill="#3f9f6a"/><circle cx="-8" cy="96" r="3.5" fill="#ff7a5a"/><circle cx="6" cy="104" r="3.5" fill="#ff7a5a"/><circle cx="4" cy="90" r="3.5" fill="#ff7a5a"/></g>`).join('')}${[190,240,290].map(x=>`<g transform="translate(${x} 0)"><path d="M0 150V112" stroke="#1c1612" stroke-width="5"/><path d="M0 112l-14-14M0 112l12-16M0 124l10-8" stroke="#1c1612" stroke-width="3"/><circle cx="0" cy="102" r="18" fill="#1a1512" opacity=".8"/></g>`).join('')}<g fill="#6a6a7a" opacity=".5"><circle cx="210" cy="70" r="5"/><circle cx="226" cy="62" r="4"/><circle cx="250" cy="74" r="6"/></g>`,
+ expl:'<b>النصف الأخضر</b> جنتهم المثمرة قبل، حين أقسموا أن يقطفوها مبكرين ولا يعطوا المساكين منها. و<b>النصف المحترق</b> «فأصبحت كالصريم»، وذكر الطبري من معاني الصريم الليل الأسود. و<b>الهلال</b> «طاف عليها طائف من ربك وهم نائمون».',
+ q:'هل في رزقك حقّ لمسكين تؤجّله أو تمنعه؟'},
+{id:'ukhdud',s:85,place:'najran',title:'أصحاب الأخدود',ayah:'قتل أصحاب الأخدود النار ذات الوقود',ref:'البروج: 4–5',
+ svg:`<rect width="320" height="200" fill="#121730"/><g stroke="#9fb4e0" stroke-opacity=".5" stroke-width="1" fill="none"><path d="M40 30L70 50L100 36L120 60"/><path d="M190 24L220 40L250 30L280 54L300 40"/><path d="M140 80L170 70L190 90"/></g><g fill="#e9eef8">${[[40,30],[70,50],[100,36],[120,60],[190,24],[220,40],[250,30],[280,54],[300,40],[140,80],[170,70],[190,90]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.4"/>`).join('')}</g><rect y="140" width="320" height="60" fill="#3a3040"/><path d="M30 156Q160 146 290 156L280 176Q160 186 40 176Z" fill="#1a0e0a"/><path d="M40 168Q160 160 280 168" stroke="#e8742c" stroke-width="6" stroke-linecap="round"/><g fill="#ffb24d">${[60,90,120,150,180,210,240,270].map(x=>`<path d="M${x} 166Q${x-5} 152 ${x} 144Q${x+5} 154 ${x} 166Z"/>`).join('')}</g><ellipse cx="160" cy="166" rx="140" ry="22" fill="#ff8a3c" opacity=".1"/>`,
+ expl:'<b>الشقّ المتوهّج</b> الأخدود المحفور في الأرض، أُضرمت فيه النار لمن ثبت على إيمانه. و<b>النجوم المتصلة</b> «والسماء ذات البروج» التي أقسم الله بها في أول السورة. ويروي الطبري أن ذلك كان بنجران.',
+ q:'«وما نقموا منهم إلا أن يؤمنوا بالله العزيز الحميد» — ما ثمن الثبات عندك؟'}
+);
+function renderStories(){
+  $('storyList').innerHTML=STORIES.map(st=>`<article class="story" id="st-${st.id}"><svg viewBox="0 0 320 200" role="img" aria-label="رسم توضيحي: ${st.title}">${st.svg}</svg><div class="bd"><h3>${st.title}</h3><p class="ayah">﴿${st.ayah}﴾</p><div class="ref">${st.ref} · <button class="linkbtn" data-sel="${st.s}">السورة على الخريطة</button>${st.place?` · <button class="linkbtn" data-place-go="${st.place}">موضع القصة: ${P[st.place].n}</button>`:''}</div><div class="lbl">تفسير الصورة</div><p class="expl" style="margin:0">${st.expl}</p><p class="reflect"><b>تأمّل:</b> ${st.q}</p></div></article>`).join('');
+}
+
+/* =========================================================
+   REFLECTION CONSTELLATIONS — connect 2–4 verses, then reflect
+   v: [ref, surah, label, text]
+   ========================================================= */
+const CONST=[
+ {id:'yusr',t:'اليُسر يولد من العسر',c:'#3dd6c4',v:[['94:5',94,'الشرح 5–6','فإن مع العسر يسرا ۝ إن مع العسر يسرا'],['65:7',65,'الطلاق 7','سيجعل الله بعد عسر يسرا'],['2:185',2,'البقرة 185','يريد الله بكم اليسر ولا يريد بكم العسر'],['2:286',2,'البقرة 286','لا يكلف الله نفسا إلا وسعها']],
+  th:'وعدٌ واحد بأربع صيغ: اليسر يصاحب العسر، ويأتي بعده، وهو مراد الله في التشريع، والتكليف لا يتجاوز الطاقة.',
+  q:'إذا كان اليسر مرادَ الله ووعدَه، فأين تبحث عنه داخل الصعوبة التي تعيشها الآن، لا بعدها فقط؟'},
+ {id:'sabr',t:'الصبر الجميل',c:'#f5b041',v:[['12:18',12,'يوسف 18','فصبر جميل والله المستعان على ما تصفون'],['12:83',12,'يوسف 83','فصبر جميل عسى الله أن يأتيني بهم جميعا'],['70:5',70,'المعارج 5','فاصبر صبرا جميلا'],['39:10',39,'الزمر 10','إنما يوفى الصابرون أجرهم بغير حساب']],
+  th:'قالها يعقوب مرتين في فقدين، ثم أُمر بها النبي، وجزاؤها بغير حساب. والصبر الجميل صبرٌ لا شكوى فيه إلى الخلق، ومعه رجاء.',
+  q:'قال يعقوب «فصبر جميل» ثم «عسى الله أن يأتيني بهم جميعاً»: كيف تجمع في صبرك بين الرضا والأمل معاً؟'},
+ {id:'rahma',t:'رحمةٌ وسعت كل شيء',c:'#ff7aa8',v:[['7:156',7,'الأعراف 156','ورحمتي وسعت كل شيء'],['6:54',6,'الأنعام 54','كتب ربكم على نفسه الرحمة'],['39:53',39,'الزمر 53','قل يا عبادي الذين أسرفوا على أنفسهم لا تقنطوا من رحمة الله']],
+  th:'الرحمة واسعة، ومكتوبة على نفسه سبحانه، ولا تُغلق حتى أمام من أسرف على نفسه.',
+  q:'إذا كانت رحمة الله لم تُغلق دون المسرفين، فمن الذي أغلقتَ أنت باب رحمتك دونه؟'},
+ {id:'qurb',t:'القريب المجيب',c:'#a78bfa',v:[['2:186',2,'البقرة 186','وإذا سألك عبادي عني فإني قريب أجيب دعوة الداع إذا دعان'],['50:16',50,'ق 16','ونحن أقرب إليه من حبل الوريد'],['40:60',40,'غافر 60','وقال ربكم ادعوني أستجب لكم']],
+  th:'لا واسطة بينك وبينه: أقرب إليك من حبل الوريد، ويجيب، بل يأمرك أن تدعوه.',
+  q:'ما الحاجة التي تحملها منذ زمن ولم ترفعها إليه بعد؟ ولماذا تأخّرت؟'},
+ {id:'itm',t:'طمأنينة القلب',c:'#7dd3fc',v:[['13:28',13,'الرعد 28','ألا بذكر الله تطمئن القلوب'],['2:260',2,'البقرة 260','قال أولم تؤمن قال بلى ولكن ليطمئن قلبي'],['89:27',89,'الفجر 27','يا أيتها النفس المطمئنة']],
+  th:'الطمأنينة تُنال بالذكر، وسألها حتى الخليل إبراهيم، وغايتها نفسٌ مطمئنة تُدعى إلى ربها راضية.',
+  q:'ما الذي يسلب طمأنينتك أكثر من غيره؟ وأيّ ذكرٍ أو يقينٍ يحتاجه قلبك أمامه؟'},
+ {id:'nur',t:'من الظلمات إلى النور',c:'#ffe066',v:[['2:257',2,'البقرة 257','الله ولي الذين آمنوا يخرجهم من الظلمات إلى النور'],['24:35',24,'النور 35','الله نور السماوات والأرض'],['6:122',6,'الأنعام 122','أومن كان ميتا فأحييناه وجعلنا له نورا يمشي به في الناس'],['57:28',57,'الحديد 28','ويجعل لكم نورا تمشون به']],
+  th:'النور من الله، يُخرج به وليّه من الظلمات، ويحييه به، فيمشي به بين الناس.',
+  q:'لو أُعطيت نوراً تمشي به بين الناس، أين ستظهر آثاره في يومك: في كلامك، أم معاملتك، أم قراراتك؟'},
+ {id:'fikr',t:'انظر وتفكّر',c:'#60a5fa',v:[['3:190',3,'آل عمران 190','إن في خلق السماوات والأرض واختلاف الليل والنهار لآيات لأولي الألباب'],['88:17',88,'الغاشية 17','أفلا ينظرون إلى الإبل كيف خلقت'],['51:21',51,'الذاريات 21','وفي أنفسكم أفلا تبصرون'],['67:3',67,'الملك 3','فارجع البصر هل ترى من فطور']],
+  th:'أربع نوافذ للتفكر: السماوات وتعاقب الليل والنهار، والإبل أقرب المخلوقات إلى العربي، ونفسك، ثم إعادة النظر بحثاً عن خلل فلا تجد.',
+  q:'اختر شيئاً تراه كل يوم ولا تلتفت إليه، وتأمّله اليوم كأنك تراه أول مرة: ماذا يدلّك على خالقه؟'},
+ {id:'shukr',t:'الشكر يزيد النعمة',c:'#b6e35d',v:[['14:7',14,'إبراهيم 7','لئن شكرتم لأزيدنكم'],['34:13',34,'سبأ 13','اعملوا آل داود شكرا وقليل من عبادي الشكور'],['27:19',27,'النمل 19','رب أوزعني أن أشكر نعمتك التي أنعمت علي وعلى والدي']],
+  th:'الشكر سبب الزيادة، وهو عمل لا قول فقط، ويُطلب من الله العون عليه كما فعل سليمان.',
+  q:'سمِّ ثلاث نعم مرّت عليك اليوم دون أن تشكرها، ثم اسأل: كيف أشكر كل واحدة منها بعمل؟'},
+ {id:'tawba',t:'باب التوبة لا يُغلق',c:'#ff9f68',v:[['66:8',66,'التحريم 8','يا أيها الذين آمنوا توبوا إلى الله توبة نصوحا'],['2:222',2,'البقرة 222','إن الله يحب التوابين ويحب المتطهرين'],['25:70',25,'الفرقان 70','فأولئك يبدل الله سيئاتهم حسنات'],['20:82',20,'طه 82','وإني لغفار لمن تاب وآمن وعمل صالحا ثم اهتدى']],
+  th:'التوبة النصوح محبوبة إلى الله، وتبدّل السيئات حسنات، وتمامها عملٌ صالح ثم ثباتٌ على الهداية.',
+  q:'ما الذنب الذي تظن أنه أكبر من أن يُغفر؟ وكيف تقرأ «يبدّل الله سيئاتهم حسنات» في حقّه؟'},
+ {id:'adl',t:'العدل ولو على النفس',c:'#e879f9',v:[['4:135',4,'النساء 135','يا أيها الذين آمنوا كونوا قوامين بالقسط شهداء لله ولو على أنفسكم'],['5:8',5,'المائدة 8','ولا يجرمنكم شنآن قوم على ألا تعدلوا اعدلوا هو أقرب للتقوى'],['16:90',16,'النحل 90','إن الله يأمر بالعدل والإحسان وإيتاء ذي القربى']],
+  th:'العدل مأمورٌ به مع النفس والقريب والعدو، والإحسان درجةٌ فوقه.',
+  q:'متى كان العدل أصعب عليك: مع نفسك، أم مع من تحب، أم مع من تكره؟'},
+ {id:'duaa',t:'دعاء الأنبياء في الضيق',c:'#f9a8d4',v:[['21:87',21,'الأنبياء 87','فنادى في الظلمات أن لا إله إلا أنت سبحانك إني كنت من الظالمين'],['21:83',21,'الأنبياء 83','وأيوب إذ نادى ربه أني مسني الضر وأنت أرحم الراحمين'],['28:24',28,'القصص 24','رب إني لما أنزلت إلي من خير فقير']],
+  th:'يونس في الظلمات سبّح واعترف، وأيوب في مرضه وصف حاله وأثنى، وموسى غريباً جائعاً أعلن فقره. ثلاث صيغ للدعاء، ليس في أيٍّ منها تذمّر.',
+  q:'أيّ هذه الصيغ أقرب إلى حالك اليوم: الاعتراف، أم وصف الحال، أم إعلان الفقر إلى الله؟'},
+ {id:'makhraj',t:'مخرجٌ من حيث لا تحتسب',c:'#34d399',v:[['65:2',65,'الطلاق 2–3','ومن يتق الله يجعل له مخرجا ويرزقه من حيث لا يحتسب'],['3:173',3,'آل عمران 173','وقالوا حسبنا الله ونعم الوكيل'],['3:159',3,'آل عمران 159','فإذا عزمت فتوكل على الله إن الله يحب المتوكلين']],
+  th:'التقوى تفتح المخرج، والتوكل يكفي صاحبه، والعزم يسبق التوكل ولا يناقضه.',
+  q:'في أمرٍ يقلقك الآن: ما الذي عليك أن تعزم عليه وتفعله، وما الذي يجب أن تتركه لله؟'},
+ {id:'afw',t:'العفو عند القدرة',c:'#fda4af',v:[['12:92',12,'يوسف 92','قال لا تثريب عليكم اليوم يغفر الله لكم وهو أرحم الراحمين'],['24:22',24,'النور 22','وليعفوا وليصفحوا ألا تحبون أن يغفر الله لكم'],['42:40',42,'الشورى 40','فمن عفا وأصلح فأجره على الله']],
+  th:'يوسف عفا عن إخوته وهو في قمّة قدرته، وآية النور نزلت في أبي بكر حين حلف ألّا ينفق على مِسطح، وأجر من عفا على الله.',
+  q:'«ألا تحبون أن يغفر الله لكم» — من الذي ينتظر عفوك، وهل يكون عفوك طريقاً إلى مغفرة الله لك؟'},
+ {id:'sakan',t:'سكنٌ ومودّة',c:'#fcd34d',v:[['30:21',30,'الروم 21','ومن آياته أن خلق لكم من أنفسكم أزواجا لتسكنوا إليها وجعل بينكم مودة ورحمة'],['25:74',25,'الفرقان 74','ربنا هب لنا من أزواجنا وذرياتنا قرة أعين']],
+  th:'البيت آية من آيات الله كالسماء والأرض: سكن ومودة ورحمة، ودعاء عباد الرحمن أن يكون قرّة أعين.',
+  q:'ما الذي تستطيع فعله هذا الأسبوع ليكون بيتك سكناً، لا مجرد مكان؟'},
+ {id:'hazan',t:'لا تحزن، إن الله معنا',c:'#93c5fd',v:[['9:40',9,'التوبة 40','إذ يقول لصاحبه لا تحزن إن الله معنا'],['20:46',20,'طه 46','قال لا تخافا إنني معكما أسمع وأرى'],['3:139',3,'آل عمران 139','ولا تهنوا ولا تحزنوا وأنتم الأعلون إن كنتم مؤمنين']],
+  th:'في الغار، وأمام فرعون، وبعد جراح أحد: يأتي النهي عن الحزن مقروناً بمعيّة الله وعلوّ الإيمان.',
+  q:'جرّب أن تقول «إن الله معنا» في موقف يقلقك اليوم: ما الذي يتغيّر في نظرتك إليه؟'}
+];
+const SHAPES={2:[[-62,-14],[62,14]],3:[[-66,34],[0,-48],[66,30]],4:[[-74,-28],[-24,44],[34,-44],[78,26]]};
+const STAR={}; let NCOLS=0, NF=1;
+function layoutNet(){
+  const w=($('net').parentElement||{}).clientWidth||900, cols=w<620?2:3;
+  if(cols===NCOLS)return false; NCOLS=cols; NF=cols===2?1.35:1;
+  const rows=Math.ceil(CONST.length/cols), W=cols*300, H=rows*230+40;
+  $('net').setAttribute('viewBox',`0 0 ${W} ${H}`);
+  CONST.forEach((c,i)=>{const col=i%cols,row=Math.floor(i/cols);c.x=150+col*300;c.y=125+row*230;
+    const sh=SHAPES[c.v.length], a=((i*47)%360)*Math.PI/180*.35;
+    c.v.forEach((v,j)=>{const [dx,dy]=sh[j];STAR[v[0]]={cid:c.id,j,x:c.x+dx*Math.cos(a)-dy*Math.sin(a),y:c.y+dx*Math.sin(a)+dy*Math.cos(a)};});});
+  return true;
+}
+let DONE=new Set(); try{DONE=new Set(JSON.parse(localStorage.getItem('atlas-const')||'[]'));}catch(e){}
+let act=null; // {cid, path:[refs]}
+const saveDone=()=>{try{localStorage.setItem('atlas-const',JSON.stringify([...DONE]));}catch(e){}};
+const cById=id=>CONST.find(c=>c.id===id);
+
+function tapStar(ref){
+  const st=STAR[ref], c=cById(st.cid);
+  if(DONE.has(c.id)){act={cid:c.id,path:c.v.map(v=>v[0])};renderNet();return;}
+  if(!act||act.cid!==c.id){act={cid:c.id,path:[ref]};}
+  else if(!act.path.includes(ref)){act.path.push(ref);if(act.path.length===c.v.length){DONE.add(c.id);saveDone();toast(`اكتمل برج «${c.t}»`);}}
+  renderNet();
+}
+function openConst(id,from){showTab('reflect');window.scrollTo(0,0);const c=cById(id);act={cid:id,path:DONE.has(id)?c.v.map(v=>v[0]):[from||c.v[0][0]]};renderNet();}
+function renderNet(){
+  layoutNet(); const vbw=NCOLS*300, vbh=Math.ceil(CONST.length/NCOLS)*230+40;
+  let o=`<defs><filter id="gl" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  for(let i=0;i<120;i++){const x=(i*137.5)%vbw,y=(i*83.7+i*i*.61)%vbh;o+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(i%3)*.45+.5}" fill="#cfd8ff" opacity=".2"/>`;}
+  CONST.forEach(c=>{
+    const done=DONE.has(c.id), isAct=act&&act.cid===c.id, path=done?c.v.map(v=>v[0]):isAct?act.path:[];
+    // halo for completed constellations
+    if(done)o+=`<circle cx="${c.x}" cy="${c.y}" r="95" fill="${c.c}" opacity=".07"/>`;
+    for(let k=1;k<path.length;k++){const a=STAR[path[k-1]],b=STAR[path[k]];const fresh=isAct&&!done&&k===path.length-1;
+      o+=`<line class="${fresh?'draw':''}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${c.c}" stroke-width="2.6" stroke-linecap="round" filter="url(#gl)" opacity=".95"/>`;}
+    if(done&&c.v.length>2){const a=STAR[path[path.length-1]],b=STAR[path[0]];o+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${c.c}" stroke-width="1.6" stroke-dasharray="4 5" opacity=".6"/>`;}
+    if(done)o+=`<text x="${c.x}" y="${c.y+92+6*NF}" text-anchor="middle" direction="rtl" fill="${c.c}" font-size="${16*NF}" font-weight="700" font-family="Reem Kufi, IBM Plex Sans Arabic, sans-serif" pointer-events="none">${c.t}</text>`;
+    c.v.forEach(v=>{const s=STAR[v[0]], inPath=path.includes(v[0]), beck=isAct&&!done&&!inPath;
+      o+=`<g class="star" data-star="${v[0]}" tabindex="0" role="button" aria-label="${v[2]}${inPath?' (موصولة)':''}"><circle cx="${s.x}" cy="${s.y}" r="26" fill="transparent"/>`;
+      if(beck)o+=`<circle class="beckon" cx="${s.x}" cy="${s.y}" r="17" fill="none" stroke="${c.c}" stroke-width="2.5"/>`;
+      o+=`<circle cx="${s.x}" cy="${s.y}" r="${inPath?15:11}" fill="${c.c}" opacity="${inPath?.55:beck?.4:.18}" filter="url(#gl)"/>`;
+      o+=`<circle class="sd" cx="${s.x}" cy="${s.y}" r="${inPath?7.5:5.5}" fill="${inPath?'#fff':c.c}" opacity="${inPath||beck?1:.7}"/>`;
+      o+=`<text x="${s.x}" y="${s.y+18+9*NF}" text-anchor="middle" direction="rtl" fill="#d4d9e8" font-size="${12.5*NF}" opacity="${inPath?1:.6}">${v[2]}</text></g>`;});
+  });
+  $('net').innerHTML=o;
+  renderNetPanel();
+}
+function renderNetPanel(){
+  let h=`<div class="cstats"><span class="cprog">اكتمل ${DONE.size} من ${CONST.length} برجاً</span><span class="ctrl"><button data-cact="all">اعرض كل الأبراج</button><button data-cact="reset">ابدأ من جديد</button></span></div>`;
+  if(!act){
+    h+=`<h3 style="font-size:24px">صِل النقاط</h3><p class="theme" style="font-size:15.5px">كل نجمة آية من القرآن. النجوم المتقاربة بلون واحد تكوّن برجاً من آيتين أو ثلاث أو أربع، تجمعها فكرة واحدة.</p><p class="hint">ابدأ بالضغط على أي نجمة، ثم اضغط النجوم التي تتوهّج بعدها لتصلها. حين يكتمل البرج يظهر اسمه وسؤال للتأمل.</p>`;
+    $('npanel').innerHTML=h;return;}
+  const c=cById(act.cid), done=DONE.has(c.id);
+  const got=act.path.map(r=>c.v.find(v=>v[0]===r));
+  h+=`<div class="num" style="color:${c.c};font-weight:600">${done?'● برج مكتمل':`برجٌ من ${c.v.length} آيات · وصلت ${act.path.length}`}</div>`;
+  h+=done?`<h3 style="font-size:26px;color:${c.c}">${c.t}</h3>`:`<h3 style="font-size:22px">ما الذي يجمع هذه الآيات؟</h3>`;
+  got.forEach(v=>h+=`<div class="cverse" style="--c:${c.c}"><p class="ayah">﴿${v[3]}﴾</p><div class="ref">${v[2]} · <button class="linkbtn" data-sel="${v[1]}">السورة على الخريطة</button></div></div>`);
+  if(!done){const left=c.v.length-act.path.length;h+=`<p class="hint">◆ اضغط ${left===1?'النجمة المتوهّجة الأخيرة':`إحدى النجوم المتوهّجة (بقي ${left})`} لتصلها بما قبلها.</p>`;}
+  else{h+=`<div class="cthread"><b style="color:${c.c}">الخيط الجامع: </b>${c.th}</div><div class="cq" style="--c:${c.c}"><b>سؤال للتأمل</b>${c.q}</div>`;
+    const next=CONST.find(x=>!DONE.has(x.id)); if(next)h+=`<div class="ctrl" style="margin-top:14px"><button data-cst="${next.id}">البرج التالي ←</button></div>`;}
+  $('npanel').innerHTML=h;
+}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200);}
+
+/* =========================================================
+   HOME + EVENTS + INIT
+   ========================================================= */
+function goHome(){
+  if(anim)cancelAnimationFrame(anim);
+  focus=null; sel=0; filt='all'; query=''; sortBy='mushaf'; region='pen'; act=null;
+  $('panel').hidden=true; $('atlasBox').classList.remove('focus'); $('overview').hidden=false; $('q').value='';
+  document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f==='all'));
+  document.querySelectorAll('[data-sort]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sort==='mushaf'));
+  showTab('map'); window.scrollTo(0,0); renderRegions(); renderGrid(); renderNet();
+  requestAnimationFrame(()=>{measure();goTo(regionSpec('pen'));});
+}
+function setTF(v){
+  TF=v; try{localStorage.setItem('atlas-tafsir',v);}catch(e){}
+  $('tafsir').value=v; buildTimeline();
+  if(focus){const p=$('panel'),y=p.scrollTop;p.innerHTML=focus.t==='s'?surahCard(focus.n):placeCard(focus.k);p.scrollTop=y;}
+  renderLayers(); toast('التفسير المعروض: '+TF_NAME[v]);
+}
+$('home').addEventListener('click',goHome);
+$('tafsir').addEventListener('change',e=>setTF(e.target.value));
+$('regions').addEventListener('click',e=>{const b=e.target.closest('[data-region]');if(!b)return;region=b.dataset.region;
+  if(focus){focus=null;$('panel').hidden=true;$('atlasBox').classList.remove('focus');$('overview').hidden=false;renderGrid();}
+  renderRegions();requestAnimationFrame(()=>{measure();goTo(regionSpec(region));});});
+function pinAct(e){const g=e.target.closest('[data-place]');if(g)enterPlace(g.dataset.place);}
+$('map').addEventListener('click',pinAct);
+$('map').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pinAct(e);}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&focus)exitFocus();});
+document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){showTab(b.dataset.tab);window.scrollTo(0,0);}});
+$('net').addEventListener('click',e=>{const g=e.target.closest('[data-star]');if(g)tapStar(g.dataset.star);});
+$('net').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const g=e.target.closest('[data-star]');if(g){e.preventDefault();tapStar(g.dataset.star);}}});
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-back]')){exitFocus();return;}
+  const tf=e.target.closest('[data-tf]'); if(tf){setTF(tf.dataset.tf);return;}
+  const cs=e.target.closest('[data-cst]'); if(cs){openConst(cs.dataset.cst,cs.dataset.from);return;}
+  const ca=e.target.closest('[data-cact]'); if(ca){if(ca.dataset.cact==='all'){CONST.forEach(c=>DONE.add(c.id));saveDone();act=null;}else{DONE.clear();saveDone();act=null;}renderNet();return;}
+  const s=e.target.closest('[data-sel]'); if(s){enterFocus(+s.dataset.sel);return;}
+  const pg=e.target.closest('[data-place-go]'); if(pg){enterPlace(pg.dataset.placeGo);return;}
+  const g=e.target.closest('[data-goplace]'); if(g){goTo(placesSpec([g.dataset.goplace]));if(innerWidth<860)$('atlasBox').scrollIntoView({block:'start'});return;}
+  const od=e.target.closest('[data-ord]'); if(od){showTab('order');const c=document.querySelector(`#timeline [data-sel="${od.dataset.ord}"]`);if(c){c.scrollIntoView({block:'center'});c.focus({preventScroll:true});}return;}
+  const sy=e.target.closest('[data-story]'); if(sy){showTab('stories');const el=$('st-'+sy.dataset.story);if(el)el.scrollIntoView({block:'start'});return;}
+  const so=e.target.closest('[data-sort]'); if(so){sortBy=so.dataset.sort;document.querySelectorAll('[data-sort]').forEach(b=>b.setAttribute('aria-pressed',b===so));renderGrid();return;}
+  const f=e.target.closest('[data-f]'); if(f){filt=f.dataset.f;document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',b===f));renderGrid();}
+});
+$('q').addEventListener('input',e=>{query=e.target.value;renderGrid();});
+if(window.ResizeObserver){new ResizeObserver(()=>onResize()).observe($('map'));new ResizeObserver(()=>{if(layoutNet())renderNet();}).observe($('net').parentElement);} else addEventListener('resize',()=>{onResize();if(layoutNet())renderNet();});
+
+$('tafsir').value=TF;
+drawStatic(); renderRegions(); renderGrid(); renderStories(); renderNet(); buildTimeline();
+showTab((location.hash||'').slice(1)||'map');
+measure(); goTo(regionSpec('pen'),true);
+
+</script>
+</body>
+</html>
