@@ -43,6 +43,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (max-width:420px){.tabs button{font-size:12px}.brand{font-size:18px}}
 .home{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--story);color:var(--ink);border:0;border-radius:10px;padding:7px 12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
 .home:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.lablink{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13.5px;text-decoration:none}
+.lablink:hover{color:var(--sand);border-color:var(--story)}
+.lablink svg{width:18px;height:18px}
+@media (max-width:480px){.lablink span{display:none}.lablink{padding:6px 8px}}
 .tfsel{flex:0 0 auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
 .tfsel select{background:var(--ink);color:var(--sand);border:1px solid var(--story);border-radius:8px;padding:6px 8px;font:inherit;font-size:13.5px}
 .tfsel select:focus-visible{outline:2px solid var(--story)}
@@ -203,6 +207,7 @@ footer{margin-top:16px;color:var(--muted);font-size:14px;max-width:80ch}
   <div class="row1"><div class="in">
     <button class="home" id="home" aria-label="الرئيسية: إعادة الأطلس إلى البداية"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 11L12 3l9 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9.5V20h5v-6h3v6h5V9.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>الرئيسية</span></button>
     <span class="brand">أطلس التنزيل</span>
+    <a class="lablink" href="manuscripts.html" title="مختبر المخطوطات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z M15 3v3h3 M9 10h6 M9 14h6 M9 18h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>المخطوطات</span></a>
     <label class="tfsel"><span>التفسير</span>
       <select id="tafsir" aria-label="اختر التفسير">
         <option value="all">الثلاثة معاً</option>
@@ -1175,8 +1180,10 @@ if(window.ResizeObserver){new ResizeObserver(()=>onResize()).observe($('map'));n
 
 $('tafsir').value=TF;
 drawStatic(); renderRegions(); renderGrid(); renderStories(); renderNet(); buildTimeline();
-showTab((location.hash||'').slice(1)||'map');
+const HASH0=(location.hash||'').slice(1), SN=/^s-(\d{1,3})$/.exec(HASH0);
+showTab(SN?'map':(HASH0||'map'));
 measure(); goTo(regionSpec('pen'),true);
+if(SN&&+SN[1]>=1&&+SN[1]<=114)enterFocus(+SN[1]);
 
 </script>
 </body>
