@@ -538,6 +538,23 @@ svg.scnsvg{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hchip{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:3px 11px;font:inherit;font-size:13px;cursor:pointer}
 .hchip[aria-pressed="true"]{background:var(--story);color:var(--ink);border-color:var(--story);font-weight:600}
 .hchip:focus-visible{outline:2px solid var(--story)}
+.pres{display:flex;flex-direction:column;gap:6px;margin:12px 0 4px;max-height:360px;overflow:auto}
+.pres1{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:start;background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--sand);font:inherit;cursor:pointer}
+.pres1:hover,.pres1:focus-visible{border-color:var(--story);outline:none}
+.pres1 small{color:var(--muted);font-size:13px}
+.pres1 .proot{color:var(--story);font-size:13.5px;font-weight:600}
+.gchain{position:relative;padding:4px 30px 4px 0;margin:8px 0 0}
+.gchain:before{content:"";position:absolute;inset-inline-start:11px;top:12px;bottom:12px;width:5px;border-radius:3px;background:linear-gradient(180deg,#fff2a8,#e9b422 20%,#b8860b 50%,#e9b422 80%,#fff2a8);background-size:100% 220px;animation:gsh 3.2s linear infinite;box-shadow:0 0 8px 2px rgba(255,216,74,.5)}
+@keyframes gsh{from{background-position:0 0}to{background-position:0 220px}}
+@media (prefers-reduced-motion:reduce){.gchain:before{animation:none}}
+.gn{position:relative;padding:4px 4px}
+.gn:before{content:"";position:absolute;inset-inline-start:-24px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--ink);border:2.5px solid #e9b422}
+.gn.me:before,.gn.root:before{background:#f3cf6e;box-shadow:0 0 0 4px rgba(233,180,34,.3)}
+.gn b{font-weight:600}.gn small{color:var(--muted);font-size:12px;margin-inline-start:6px}
+.gn.rel b{font-weight:400;color:var(--muted)}
+.gn.t b{color:var(--story)}.gn.root b{color:var(--story);font-size:17px}
+.groot{margin-top:8px;padding:10px 14px;border-radius:10px;background:rgba(243,207,110,.1);border:1px solid rgba(243,207,110,.35);display:flex;gap:10px;align-items:baseline}
+.groot span{color:var(--muted);font-size:13px}.groot b{color:var(--story)}
 .pinsight{font-size:15.5px;margin:14px 0 4px;max-width:80ch;line-height:1.8;border-inline-start:3px solid var(--story);padding-inline-start:12px}
 .pwrap{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start;margin-top:10px}
 @media (min-width:860px){.pwrap{grid-template-columns:minmax(0,1fr) 340px}}
@@ -1115,9 +1132,10 @@ body.battling{overflow:hidden}
     <div class="pstat" id="pstat"></div>
     <div class="pctl">
       <div class="pdims" id="pdims" role="group" aria-label="طريقة التقسيم"></div>
-      <div class="prow2"><input id="pq" type="search" placeholder="ابحث عن اسم أو قبيلة" aria-label="بحث في الأسماء"><span class="pview" id="pview"><button class="seg" data-pview="dots" aria-pressed="true">نقاط</button><button class="seg" data-pview="names" aria-pressed="false">أسماء</button></span></div>
+      <div class="prow2"><input id="pq" type="search" placeholder="ابحث عن اسم، ويظهر لك نسبه إلى أصله" aria-label="بحث في الأسماء"><span class="pview" id="pview"><button class="seg" data-pview="dots" aria-pressed="true">نقاط</button><button class="seg" data-pview="names" aria-pressed="false">أسماء</button></span></div>
       <div class="phls" id="phls" role="group" aria-label="تمييز"></div>
     </div>
+    <div id="pres" aria-live="polite"></div>
     <p class="pinsight" id="pinsight" aria-live="polite"></p>
     <div class="pwrap">
       <div class="pfield" id="pfield"></div>
@@ -2462,6 +2480,50 @@ function pmatch(p){
   if(phl&&!p.t.includes(phl))return false;
   return true;
 }
+
+/* سلسلة النسب: من الاسم إلى الأب والجد، ثم الفرع والقبيلة إلى أصلها (عدنان أو قحطان) */
+const TPAR={'الأنصار':'الأزد','الأزد':'كهلان','همدان':'كهلان','مذحج':'كهلان','كندة':'كهلان','طيّئ':'كهلان','بجيلة':'أنمار','خثعم':'أنمار','أنمار':'كهلان','كهلان':'سبأ','حمير':'سبأ','سبأ':'قحطان',
+ 'كلب':'قضاعة','جهينة':'قضاعة','قضاعة':'حمير','الأصبحي':'حمير',
+ 'بنو هاشم':'قريش','قريش':'كنانة','غفار':'كنانة','كنانة':'خزيمة','بنو أسد':'خزيمة','خزيمة':'مدركة','مدركة':'إلياس','تميم':'طابخة','طابخة':'إلياس','إلياس':'مضر',
+ 'أشجع':'غطفان','غطفان':'قيس عيلان','قيس عيلان':'مضر','مضر':'نزار','ربيعة':'نزار','نزار':'معد','معد':'عدنان'};
+const TNOTE={'قضاعة':'على المشهور، وفي نسبها خلاف'};
+const ROOTS={'عدنان':'عدنانيّ: من ولد إسماعيل عليه السلام، عرب الحجاز ونجد','قحطان':'قحطانيّ: من عرب اليمن'};
+const HPAR={'الحسين':'علي','الحسن':'علي','علي':'أبي طالب','عقيل':'أبي طالب','جعفر':'أبي طالب','أبي طالب':'عبد المطلب','عبد المطلب':'هاشم'};
+function lineage(p){
+  let base=p.n, rel='';
+  const ci=base.indexOf('،'); if(ci>-1){rel=base.slice(ci+1).trim();base=base.slice(0,ci).trim();}
+  const mi=base.indexOf(' مولى '); if(!rel&&mi>-1){rel=base.slice(mi+1).trim();base=base.slice(0,mi).trim();}
+  base=base.replace(/\s*\(.*?\)\s*/g,' ').trim();
+  if(rel&&!/^(مولى|زوجة)/.test(rel)){base=base.replace(/^(\S+(?: الله)?)/,'$1 '+rel);rel='';}
+  let segs=base.split(/\s+(?:بن|بنت)\s+/);
+  if(base==='الإمام محمد بن علي الباقر')segs=['الإمام محمد الباقر','علي زين العابدين','الحسين'];
+  else for(let i=1;i<segs.length;i++){const w=segs[i].split(' ');
+    while(w.length>1&&/^ال\S+ي$/.test(w[w.length-1]))w.pop();segs[i]=w.join(' ');
+    const m=segs[i].match(/^(.*?)\s+(الأكبر|زين العابدين)$/);if(m){segs[0]+=' '+m[2];segs[i]=m[1];}}
+  const out=segs.map((s,i)=>({n:s,k:i?'a':'me'}));
+  if(rel)out.push({n:rel,k:'rel'});
+  if(p.grp==='m'){const e=DIMS.find(x=>x.k==='eth').cats.find(x=>x[0]===p.eth);return {L:out,root:e&&p.eth!=='u'?`من الموالي، ${e[1]}`:'من الموالي، ولم تذكر المصادر أصله'};}
+  if(p.grp==='h'){let x=segs[segs.length-1];if(!HPAR[x])x=x.split(' ')[0];while(HPAR[x]){x=HPAR[x];out.push({n:x,k:'a'});}out.pop();}
+  let tr=(p.tr||'').replace(/\s*\(.*?\)\s*/g,'').trim();
+  if(!tr||tr==='غير مذكورة'||tr.includes('الرضاعة'))return {L:out,root:'لم تذكر المصادر قبيلته'};
+  const [t,b]=tr.split(/:\s*/);
+  if(b)out.push({n:b,k:'t'});
+  let x=t;out.push({n:x,k:'t',note:TNOTE[x]});
+  while(TPAR[x]){x=TPAR[x];out.push({n:x,k:ROOTS[x]?'root':'t',note:TNOTE[x]});}
+  return {L:out,root:ROOTS[x]||`${x}، ولم نحدّد فرعها الأعلى لاشتراك الاسم بين أكثر من قبيلة`};
+}
+const rootShort=p=>{const r=lineage(p).root;return r.split(/[:،]/)[0];};
+function lineageHTML(p){
+  if(EN)return '';
+  const {L:ln,root}=lineage(p);
+  return `<div class="lbl">الخط الذهبي إلى الأصل</div><div class="gchain">${ln.map(x=>`<div class="gn ${x.k}"><b>${x.n}</b>${x.note?`<small> · ${x.note}</small>`:''}</div>`).join('')}</div><div class="groot"><span>أصله</span><b>${root}</b></div>`;
+}
+function presHTML(){
+  const q=pq.trim(); if(!q||EN)return '';
+  const r=PEOPLE.filter(p=>pmatch(p)).slice(0,12);
+  if(!r.length)return `<div class="pres"><p class="note">ما لقينا اسماً قريباً من هذا. جرّب اسماً واحداً فقط.</p></div>`;
+  return `<div class="pres">${r.map(p=>`<button class="pres1" data-pid="${p.id}"><b>${p.n}</b><small>${lineage(p).L.slice(1).map(x=>x.n).join(' ← ')||'—'}</small><span class="proot">أصله: ${rootShort(p)}</span></button>`).join('')}</div>`;
+}
 function pinsight(){
   const c=pcount(), P=PEOPLE, m=P.filter(isMartyr), n=k=>P.filter(p=>p[pdim]===k).length;
   switch(pdim){
@@ -2527,6 +2589,7 @@ function personCard(id){
   if(tags.length)h+=`<div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
   if(p.note)h+=`<p class="theme" style="font-size:15.5px">${p.note}</p>`;
   h+=`<dl class="pdl">${rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join('')}</dl>`;
+  h+=lineageHTML(p);
   const rel=(p.rel||[]).map(r=>PI[r]).filter(Boolean);
   if(rel.length)h+=`<div class="lbl">${L('ذوو صلة','Related')}</div><div class="tags">${rel.map(r=>`<button class="tag tagbtn" data-pid="${r.id}">${r.k||r.n}</button>`).join('')}</div>`;
   const evs=[p.je,p.ev].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i);
@@ -8721,7 +8784,7 @@ function setTopH(){const t=document.querySelector('.topbar');if(!t)return;const 
 function goHome(){
   if(anim)cancelAnimationFrame(anim); stopPlay(); closeStage(true); closePerson();
   focus=null; sel=null; filt='all'; query=''; region='all'; act=null; csel=null; pdim='grp'; phl=null; pq=''; pview='dots';
-  $('panel').hidden=true; $('atlasBox').classList.remove('focus'); document.body.classList.remove('focusing'); setTopH(); $('overview').hidden=false; $('q').value=''; $('pq').value='';
+  $('panel').hidden=true; $('atlasBox').classList.remove('focus'); document.body.classList.remove('focusing'); setTopH(); $('overview').hidden=false; $('q').value=''; $('pq').value=''; $('pres').innerHTML='';
   document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f==='all'));
   showTab('map'); window.scrollTo(0,0); renderRegions(); renderGrid(); renderNet(); renderCauses(); renderPeople();
   requestAnimationFrame(()=>{measure();goTo(regionSpec('all'));});
@@ -8813,7 +8876,7 @@ document.addEventListener('click',e=>{
   const pv=t.closest('[data-pview]'); if(pv){pview=pv.dataset.pview;renderPeople();return;}
 });
 $('q').addEventListener('input',e=>{query=e.target.value;renderGrid();});
-$('pq').addEventListener('input',e=>{pq=e.target.value;layoutPeople();});
+$('pq').addEventListener('input',e=>{pq=e.target.value;layoutPeople();$('pres').innerHTML=presHTML();});
 /* ResizeObserver work is deferred to the next frame so it never resizes what it observes mid-delivery */
 const nextFrame=fn=>{let q=0;return ()=>{if(q)return;q=requestAnimationFrame(()=>{q=0;fn();});};};
 if(window.ResizeObserver){
