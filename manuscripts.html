@@ -196,7 +196,7 @@ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-si
 
 <div class="topbar">
   <div class="row1"><div class="in">
-    <a class="home" href="index.html" id="toAtlas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z M9 4v14 M15 6v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>الأطلس</span></a>
+    <a class="home" href="tanzil.html" id="toAtlas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z M9 4v14 M15 6v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>الأطلس</span></a>
     <button class="brand" data-go="home">مختبر المخطوطات</button>
     <button class="ghost" data-go="home" aria-label="قائمة المختبر"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>القائمة</span></button>
   </div></div>
@@ -213,7 +213,7 @@ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-si
 <section class="pane" data-pane="sanaa" hidden></section>
 <section class="pane" data-pane="lessons" hidden></section>
 <section class="pane" data-pane="book" hidden></section>
-<footer>صور مخطوطة توبنغن Ma VI 165 © <a href="https://idb.ub.uni-tuebingen.de/diglit/MaVI165">مكتبة جامعة توبنغن</a>. التأريخ: <a href="https://corpuscoranicum.de/pdf/Radiocarbon_Dating_of_Quran_Manuscripts.pdf">نتائج الكربون المشع، Corpus Coranicum</a>. جزء من <a href="index.html">أطلس التنزيل</a>.</footer>
+<footer>صور مخطوطة توبنغن Ma VI 165 © <a href="https://idb.ub.uni-tuebingen.de/diglit/MaVI165">مكتبة جامعة توبنغن</a>. التأريخ: <a href="https://corpuscoranicum.de/pdf/Radiocarbon_Dating_of_Quran_Manuscripts.pdf">نتائج الكربون المشع، Corpus Coranicum</a>. جزء من <a href="tanzil.html">أطلس التنزيل</a>.</footer>
 </div>
 
 <script>
@@ -392,7 +392,7 @@ function pickSurah(n, user){
     <div class="ev"><span class="lbl">صفحاتها في المخطوطة</span><span class="num">${AR(s.p)}–${AR(s.end)} (نحو ${AR(pages)} صفحة)</span>
     <span class="lbl">آثار لاحقة رُصدت فيها</span><span>${AR(rows.length)}${rows.length?' · '+catKeys.filter(k=>rows.some(r=>r.c===k)).map(k=>`<span class="chip" style="color:${CATCOL[k]}">${CATN[k]} ${AR(rows.filter(r=>r.c===k).length)}</span>`).join(' '):''}</span></div>
     ${cnt?`<div><div class="lbl">العنوان المكتوب لاحقاً في رأس السورة</div><p class="q" style="font-size:20px">${cnt.s} ${cnt.w}</p><p style="font-size:14px">عدد آياتها فيه ${AR(cnt.n)}، وهذا يطابق: <b style="color:var(--story)">${cnt.m}</b>.</p>${cnt.img?`<img src="${cnt.img}" alt="العنوان اللاحق في رأس سورة ${s.name}" style="margin-top:8px;border-radius:8px;border:1px solid var(--line)" loading="lazy">`:''}</div>`:''}
-    <div class="segs"><a class="btn" href="index.html#s-${s.n}">السورة في الأطلس ←</a><button class="btn alt" data-go="evidence">كل الآثار</button></div>
+    <div class="segs"><a class="btn" href="tanzil.html#s-${s.n}">السورة في الأطلس ←</a><button class="btn alt" data-go="evidence">كل الآثار</button></div>
   </div>`;
   if(user) try{ history.replaceState(null,'','#surah-'+s.n);}catch(e){}
 }
